@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RoofIQ — Turn Your Website Into a Booking Machine</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap');
+
+/* ══════════════════════════════════════
+   TOKENS
+══════════════════════════════════════ */
+:root {
+  --orange:   #c84b11;
+  --orange-d: #a03a0a;
+  --orange-l: #fef0e8;
+  --orange-m: #f4793a;
+  --navy:     #1b2b4b;
+  --navy-l:   #e8ecf3;
+  --slate:    #4a5568;
+  --muted:    #718096;
+  --border:   #e2e8f0;
+  --bg:       #f7f6f3;
+  --cream:    #fdfcfa;
+  --white:    #ffffff;
+  --green:    #276749;
+  --green-l:  #ebf5ee;
+  --red-l:    #fef2f0;
+  --red-b:    #fcd5cc;
+
+  --ff-head: 'Zilla Slab', Georgia, serif;
+  --ff-body: 'DM Sans', system-ui, sans-serif;
+  --r:       10px;
+  --shadow:  0 2px 16px rgba(0,0,0,.07);
+  --shadow-lg: 0 8px 40px rgba(0,0,0,.12);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--ff-body);
+  background: var(--cream);
+  color: var(--navy);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ══════════════════════════════════════
+   NAV
+══════════════════════════════════════ */
+nav {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--white);
+  border-bottom: 2px solid var(--orange);
+  padding: 0 28px;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 62px;
+  box-shadow: 0 2px 12px rgba(0,0,0,.06);
+}
+.nav-brand {
+  font-family: var(--ff-head);
+  font-size: 22px; font-weight: 700;
+  color: var(--navy);
+}
+.nav-brand span { color: var(--orange); }
+.nav-links {
+  display: flex; align-items: center; gap: 28px;
+}
+.nav-links a {
+  font-size: 14px; font-weight: 600; color: var(--slate);
+  text-decoration: none; transition: color .15s;
+}
+.nav-links a:hover { color: var(--orange); }
+.nav-cta {
+  background: var(--orange); color: #fff;
+  font-family: var(--ff-body); font-size: 14px; font-weight: 700;
+  padding: 10px 24px; border-radius: var(--r);
+  text-decoration: none; transition: background .15s;
+  white-space: nowrap;
+}
+.nav-cta:hover { background: var(--orange-d); }
+
+/* ══════════════════════════════════════
+   HERO
+══════════════════════════════════════ */
+.hero {
+  background: var(--navy);
+  position: relative; overflow: hidden;
+}
+/* Roofline SVG background */
+.hero-roof {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 120px; opacity: .08;
+}
+.hero-inner {
+  position: relative; z-index: 1;
+  max-width: 1060px; margin: 0 auto;
+  padding: 64px 28px 72px;
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 52px; align-items: center;
+}
+.hero-left {}
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(200,75,17,.25); border: 1px solid rgba(200,75,17,.5);
+  color: #f4a87c; border-radius: 4px;
+  font-size: 11px; font-weight: 700; letter-spacing: .8px;
+  padding: 5px 12px; margin-bottom: 22px;
+  text-transform: uppercase;
+}
+.hero h1 {
+  font-family: var(--ff-head);
+  font-size: clamp(30px, 4vw, 48px);
+  font-weight: 700; color: #fff;
+  line-height: 1.12; margin-bottom: 18px;
+}
+.hero h1 em { color: var(--orange-m); font-style: normal; }
+.hero-sub {
+  font-size: 16px; color: rgba(255,255,255,.62);
+  line-height: 1.7; margin-bottom: 32px; max-width: 440px;
+}
+.hero-ctas { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.btn-hero {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--orange); color: #fff;
+  font-family: var(--ff-body); font-size: 16px; font-weight: 700;
+  padding: 15px 30px; border-radius: var(--r);
+  text-decoration: none; transition: background .15s, transform .1s;
+  box-shadow: 0 4px 20px rgba(200,75,17,.4);
+}
+.btn-hero:hover { background: var(--orange-d); transform: translateY(-1px); }
+.btn-hero-ghost {
+  font-size: 14px; font-weight: 600; color: rgba(255,255,255,.55);
+  text-decoration: none; transition: color .15s;
+}
+.btn-hero-ghost:hover { color: #fff; }
+
+/* Hero right — phone mockup */
+.hero-right { display: flex; justify-content: center; align-items: center; }
+.phone-frame {
+  width: 240px;
+  background: #1e2a3d;
+  border: 2px solid rgba(255,255,255,.12);
+  border-radius: 28px;
+  padding: 14px;
+  box-shadow: 0 24px 60px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.05);
+  position: relative;
+}
+.phone-notch {
+  width: 60px; height: 10px;
+  background: rgba(255,255,255,.1); border-radius: 10px;
+  margin: 0 auto 14px;
+}
+.phone-screen {
+  background: #fff; border-radius: 18px; overflow: hidden;
+}
+.phone-hdr {
+  background: var(--orange);
+  padding: 10px 12px 8px;
+}
+.phone-hdr-co { font-family: var(--ff-head); font-size: 11px; font-weight: 700; color: #fff; }
+.phone-hdr-tag { font-size: 9px; color: rgba(255,255,255,.7); margin-top: 1px; }
+.phone-body { padding: 10px 12px 14px; }
+.phone-step {
+  font-size: 8px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .5px; color: var(--muted); margin-bottom: 6px;
+}
+.phone-price {
+  font-family: var(--ff-head);
+  font-size: 22px; font-weight: 700; color: var(--orange);
+  line-height: 1; margin-bottom: 2px;
+}
+.phone-price-sub { font-size: 8px; color: var(--muted); margin-bottom: 10px; }
+.phone-chips { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 10px; }
+.phone-chip {
+  background: var(--bg); border-radius: 4px;
+  font-size: 7.5px; font-weight: 600; color: var(--slate);
+  padding: 3px 6px;
+}
+.phone-lead {
+  background: var(--navy);
+  border-radius: 8px; padding: 8px 10px;
+}
+.phone-lead-lbl { font-size: 7.5px; font-weight: 700; color: rgba(255,255,255,.5); text-transform: uppercase; margin-bottom: 5px; }
+.phone-lead-input {
+  background: rgba(255,255,255,.08); border-radius: 5px;
+  padding: 5px 7px; margin-bottom: 5px;
+  font-size: 8px; color: rgba(255,255,255,.4);
+}
+.phone-lead-btn {
+  background: var(--orange); border-radius: 5px;
+  padding: 6px; text-align: center;
+  font-size: 8px; font-weight: 700; color: #fff;
+}
+
+/* ══════════════════════════════════════
+   TRUST STRIP
+══════════════════════════════════════ */
+.trust-strip {
+  background: var(--orange);
+  padding: 0;
+}
+.trust-strip-inner {
+  max-width: 1060px; margin: 0 auto;
+  display: flex; align-items: stretch;
+  flex-wrap: wrap;
+}
+.trust-item {
+  flex: 1; min-width: 180px;
+  padding: 20px 24px;
+  border-right: 1px solid rgba(255,255,255,.2);
+  text-align: center;
+}
+.trust-item:last-child { border-right: none; }
+.trust-val {
+  font-family: var(--ff-head);
+  font-size: 26px; font-weight: 700; color: #fff;
+  line-height: 1;
+}
+.trust-lbl { font-size: 12px; color: rgba(255,255,255,.75); margin-top: 3px; }
+
+/* ══════════════════════════════════════
+   SECTION BASE
+══════════════════════════════════════ */
+.section { max-width: 1060px; margin: 0 auto; padding: 72px 28px; }
+.eyebrow {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .8px; color: var(--orange); margin-bottom: 10px; display: block;
+}
+.section-h {
+  font-family: var(--ff-head);
+  font-size: clamp(26px, 3.5vw, 40px); font-weight: 700;
+  color: var(--navy); line-height: 1.15; margin-bottom: 14px;
+}
+.section-p {
+  font-size: 16px; color: var(--slate); line-height: 1.7;
+  max-width: 560px;
+}
+
+/* ══════════════════════════════════════
+   VS CARDS
+══════════════════════════════════════ */
+.vs-wrap { margin-top: 44px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.vs-card {
+  border-radius: 12px; padding: 28px 28px 24px;
+  border: 1.5px solid transparent;
+}
+.vs-card.bad  { background: var(--red-l);   border-color: var(--red-b); }
+.vs-card.good { background: var(--green-l); border-color: #b2dfcc; }
+.vs-hd {
+  font-family: var(--ff-head); font-size: 18px; font-weight: 700;
+  margin-bottom: 20px; display: flex; align-items: center; gap: 9px;
+}
+.vs-card.bad  .vs-hd { color: #9b2c1a; }
+.vs-card.good .vs-hd { color: var(--green); }
+.vs-row {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 14.5px; color: #374151;
+  margin-bottom: 14px; line-height: 1.5;
+}
+.vs-row:last-child { margin-bottom: 0; }
+.vs-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+/* ══════════════════════════════════════
+   DASHBOARD — PHONE STYLE
+══════════════════════════════════════ */
+.dash-section {
+  background: var(--navy);
+  padding: 72px 28px;
+}
+.dash-inner {
+  max-width: 1060px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 1.1fr;
+  gap: 56px; align-items: center;
+}
+.dash-inner .eyebrow { color: var(--orange-m); }
+.dash-inner .section-h { color: #fff; }
+.dash-inner .section-p { color: rgba(255,255,255,.55); margin-bottom: 0; }
+
+/* App-style mock — not macOS */
+.app-mock {
+  background: #fff;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border);
+}
+.app-topbar {
+  background: var(--navy);
+  padding: 14px 18px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.app-topbar-brand {
+  font-family: var(--ff-head);
+  font-size: 15px; font-weight: 700; color: #fff;
+}
+.app-topbar-brand span { color: var(--orange-m); }
+.app-month-badge {
+  font-size: 11px; font-weight: 600; color: rgba(255,255,255,.5);
+  background: rgba(255,255,255,.08); padding: 3px 9px; border-radius: 20px;
+}
+.app-body { padding: 18px; }
+.app-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
+.app-stat {
+  background: var(--bg); border-radius: 10px; padding: 12px 10px; text-align: center;
+}
+.app-stat-val {
+  font-family: var(--ff-head);
+  font-size: 20px; font-weight: 700; color: var(--navy); line-height: 1;
+}
+.app-stat-val.green { color: var(--green); }
+.app-stat-val.orange { color: var(--orange); }
+.app-stat-lbl { font-size: 10px; color: var(--muted); margin-top: 3px; }
+
+.app-leads { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+.app-lead {
+  background: var(--bg); border-radius: 10px;
+  padding: 11px 13px;
+  display: flex; align-items: center; gap: 10px;
+  border-left: 4px solid transparent;
+}
+.app-lead.booked { border-left-color: var(--green); }
+.app-lead.ins    { border-left-color: #7c3aed; }
+.app-lead.hot    { border-left-color: var(--orange); }
+.app-badge {
+  font-size: 10px; font-weight: 700; padding: 2px 8px;
+  border-radius: 4px; flex-shrink: 0;
+}
+.app-badge.booked { background: var(--green-l);          color: var(--green); }
+.app-badge.ins    { background: rgba(124,58,237,.1);      color: #7c3aed; }
+.app-badge.hot    { background: var(--orange-l);          color: var(--orange); }
+.app-lead-info { flex: 1; min-width: 0; }
+.app-lead-name { font-size: 13px; font-weight: 700; color: var(--navy); }
+.app-lead-meta { font-size: 10.5px; color: var(--muted); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.app-lead-val  { font-family: var(--ff-head); font-size: 14px; font-weight: 700; color: var(--green); flex-shrink: 0; }
+
+.app-locked {
+  background: #fff8f6; border: 1.5px dashed #f4a87c;
+  border-radius: 10px; padding: 12px 14px;
+  display: flex; align-items: center; gap: 10px;
+}
+.app-locked-icon { font-size: 18px; flex-shrink: 0; }
+.app-locked-text { flex: 1; }
+.app-locked-text strong { font-size: 12.5px; font-weight: 700; color: var(--orange-d); display: block; }
+.app-locked-text span   { font-size: 11px; color: var(--muted); }
+.app-locked-btn {
+  background: var(--orange); color: #fff;
+  font-size: 11.5px; font-weight: 700;
+  padding: 7px 13px; border-radius: 7px;
+  text-decoration: none; white-space: nowrap; flex-shrink: 0;
+  transition: background .15s;
+}
+.app-locked-btn:hover { background: var(--orange-d); }
+
+/* ══════════════════════════════════════
+   PRICING
+══════════════════════════════════════ */
+.pricing-section { background: var(--bg); padding: 72px 28px; }
+.pricing-inner { max-width: 1060px; margin: 0 auto; }
+.pricing-hd { text-align: center; margin-bottom: 52px; }
+.pricing-hd .eyebrow { display: block; }
+.pricing-hd .section-p { margin: 0 auto; text-align: center; }
+
+/* Stack vertically — contractor reads top to bottom, not left to right */
+.tiers { display: flex; flex-direction: column; gap: 14px; max-width: 760px; margin: 0 auto; }
+
+.tier {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  transition: box-shadow .2s;
+}
+.tier:hover { box-shadow: var(--shadow-lg); }
+.tier.featured {
+  border-color: var(--orange);
+  box-shadow: 0 0 0 4px rgba(200,75,17,.08), var(--shadow-lg);
+}
+.tier-hdr {
+  display: flex; align-items: center;
+  padding: 20px 24px;
+  gap: 18px; cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.tier-hdr-left { flex: 1; }
+.tier-name {
+  font-family: var(--ff-head);
+  font-size: 19px; font-weight: 700; color: var(--navy);
+  display: flex; align-items: center; gap: 10px;
+}
+.tier-pill {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .5px; padding: 3px 9px; border-radius: 4px;
+  background: var(--orange-l); color: var(--orange);
+}
+.tier-tagline { font-size: 13px; color: var(--muted); margin-top: 3px; }
+.tier-hdr-right { text-align: right; flex-shrink: 0; }
+.tier-price {
+  font-family: var(--ff-head);
+  font-size: 28px; font-weight: 700; color: var(--navy); line-height: 1;
+}
+.tier-price.free { color: var(--green); }
+.tier-price-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.tier-chevron {
+  font-size: 12px; color: var(--muted);
+  transition: transform .25s;
+  flex-shrink: 0; margin-left: 12px;
+}
+.tier.open .tier-chevron { transform: rotate(180deg); }
+
+.tier-body {
+  display: none;
+  padding: 0 24px 24px;
+  border-top: 1px solid var(--border);
+  margin-top: 0;
+}
+.tier.open .tier-body { display: block; }
+.tier-body-inner { padding-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+
+.tier-features { display: flex; flex-direction: column; gap: 9px; }
+.tf {
+  display: flex; align-items: flex-start; gap: 9px;
+  font-size: 14px; color: #374151; line-height: 1.45;
+}
+.tf .icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; color: var(--green); font-style: normal; }
+.tf.locked { color: var(--muted); }
+.tf.locked .icon { color: var(--border); }
+
+.tier-cta-wrap { display: flex; flex-direction: column; gap: 10px; }
+.tier-cta-desc {
+  background: var(--bg); border-radius: 10px; padding: 14px;
+  font-size: 13px; color: var(--slate); line-height: 1.55;
+}
+.tier-cta-desc strong { color: var(--navy); font-weight: 700; display: block; margin-bottom: 3px; }
+.tier-btn {
+  display: block; width: 100%; padding: 14px;
+  text-align: center; border-radius: var(--r);
+  font-family: var(--ff-body); font-size: 15px; font-weight: 700;
+  text-decoration: none; border: none; cursor: pointer;
+  transition: background .15s, transform .1s;
+  -webkit-tap-highlight-color: transparent;
+}
+.tier-btn:active { transform: scale(.99); }
+.tier-btn.free-btn {
+  background: var(--bg); color: var(--navy);
+  border: 1.5px solid var(--border);
+}
+.tier-btn.free-btn:hover { border-color: var(--navy); }
+.tier-btn.primary-btn { background: var(--navy); color: #fff; }
+.tier-btn.primary-btn:hover { background: #253554; }
+.tier-btn.orange-btn { background: var(--orange); color: #fff; box-shadow: 0 4px 16px rgba(200,75,17,.3); }
+.tier-btn.orange-btn:hover { background: var(--orange-d); }
+
+/* ══════════════════════════════════════
+   HOW YOU'LL UPGRADE (journey)
+══════════════════════════════════════ */
+.journey-section { padding: 72px 28px; }
+.journey-inner { max-width: 760px; margin: 0 auto; }
+.journey-inner .section-p { margin-bottom: 44px; }
+
+.journey { display: flex; flex-direction: column; gap: 0; position: relative; }
+.journey::before {
+  content: '';
+  position: absolute; left: 19px; top: 30px; bottom: 30px;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--orange-l), var(--orange));
+}
+.journey-step {
+  display: flex; align-items: flex-start; gap: 20px;
+  padding: 16px 0; position: relative;
+}
+.j-num {
+  width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--ff-head); font-size: 16px; font-weight: 700;
+  position: relative; z-index: 1; border: 2px solid transparent;
+}
+.j-num.n0 { background: var(--bg);      border-color: var(--border); color: var(--muted); }
+.j-num.n1 { background: var(--navy-l);  border-color: var(--navy);   color: var(--navy); }
+.j-num.n2 { background: var(--navy);    border-color: var(--navy);   color: #fff; }
+.j-num.n3 { background: var(--orange-l); border-color: var(--orange); color: var(--orange); }
+.j-num.n4 { background: var(--orange);  border-color: var(--orange-d); color: #fff; }
+
+.j-content { flex: 1; padding-top: 8px; padding-bottom: 8px; }
+.j-content strong {
+  font-family: var(--ff-head); font-size: 17px; font-weight: 700;
+  color: var(--navy); display: block; margin-bottom: 5px;
+}
+.j-content p { font-size: 14px; color: var(--slate); line-height: 1.6; }
+.j-trigger {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-top: 10px;
+  background: var(--orange-l); border: 1px solid #f4c4a8;
+  color: var(--orange-d); font-size: 12px; font-weight: 700;
+  padding: 5px 12px; border-radius: 6px;
+}
+
+/* ══════════════════════════════════════
+   STORM / INSURANCE FEATURE
+══════════════════════════════════════ */
+.storm-section { background: var(--navy); padding: 72px 28px; }
+.storm-inner {
+  max-width: 1060px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 56px; align-items: center;
+}
+.storm-inner .eyebrow { color: var(--orange-m); }
+.storm-inner .section-h { color: #fff; }
+.storm-inner .section-p { color: rgba(255,255,255,.55); margin-bottom: 28px; }
+
+.storm-bullets { display: flex; flex-direction: column; gap: 16px; }
+.sb {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 14px 16px;
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 10px;
+}
+.sb-icon {
+  width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0;
+  background: rgba(200,75,17,.25); border: 1px solid rgba(200,75,17,.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px;
+}
+.sb-text strong { font-size: 14px; font-weight: 700; color: #fff; display: block; }
+.sb-text span   { font-size: 12.5px; color: rgba(255,255,255,.45); line-height: 1.5; }
+
+/* Lead card — cleaner, app-style */
+.storm-lead-card {
+  background: var(--white); border-radius: 16px; overflow: hidden;
+  box-shadow: 0 16px 48px rgba(0,0,0,.3);
+}
+.slc-hdr {
+  background: var(--orange); padding: 14px 18px;
+  display: flex; align-items: center; gap: 10px;
+}
+.slc-icon { font-size: 22px; }
+.slc-hdr-text strong { font-size: 14px; font-weight: 700; color: #fff; display: block; }
+.slc-hdr-text span   { font-size: 11.5px; color: rgba(255,255,255,.75); }
+.slc-verified {
+  margin-left: auto;
+  background: rgba(255,255,255,.2);
+  color: #fff; font-size: 10.5px; font-weight: 700;
+  padding: 4px 10px; border-radius: 20px; white-space: nowrap;
+}
+.slc-body { padding: 18px; }
+.slc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+.slc-field {
+  background: var(--bg); border-radius: 8px; padding: 10px 12px;
+}
+.slc-field label { font-size: 9.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); display: block; margin-bottom: 2px; }
+.slc-field span  { font-size: 13.5px; font-weight: 700; color: var(--navy); }
+.slc-script {
+  background: var(--navy); border-radius: 10px; padding: 14px;
+}
+.slc-script label { font-size: 9.5px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: rgba(255,255,255,.4); display: block; margin-bottom: 8px; }
+.slc-script p { font-size: 13px; color: rgba(255,255,255,.75); line-height: 1.6; font-style: italic; }
+.slc-disclaimer { font-size: 10px; color: rgba(255,255,255,.3); margin-top: 8px; line-height: 1.45; }
+
+/* ══════════════════════════════════════
+   ROI CALCULATOR
+══════════════════════════════════════ */
+.roi-section { padding: 72px 28px; background: var(--bg); }
+.roi-inner { max-width: 720px; margin: 0 auto; }
+.roi-inner .section-p { margin-bottom: 32px; }
+
+.roi-card {
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: 16px; padding: 28px;
+  box-shadow: var(--shadow);
+}
+.roi-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+.roi-field label {
+  display: block; font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .6px;
+  color: var(--muted); margin-bottom: 7px;
+}
+.roi-field input, .roi-field select {
+  width: 100%; padding: 12px 14px;
+  border: 1.5px solid var(--border); border-radius: var(--r);
+  font-family: var(--ff-body); font-size: 15px; color: var(--navy);
+  outline: none; transition: border-color .15s;
+  background: var(--white); -webkit-appearance: none;
+}
+.roi-field input:focus, .roi-field select:focus { border-color: var(--orange); }
+
+.roi-result {
+  background: var(--navy);
+  border-radius: 12px; padding: 22px;
+}
+.roi-result-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 14px; }
+.roi-stat label {
+  font-size: 9.5px; color: rgba(255,255,255,.4);
+  text-transform: uppercase; letter-spacing: .5px; display: block; margin-bottom: 4px;
+}
+.roi-stat .val {
+  font-family: var(--ff-head);
+  font-size: 22px; font-weight: 700; color: #fff; line-height: 1;
+}
+.roi-stat .val.green { color: #4ade80; }
+.roi-summary { font-size: 13px; color: rgba(255,255,255,.5); line-height: 1.6; }
+.roi-disclaimer { font-size: 11px; color: rgba(255,255,255,.28); margin-top: 10px; line-height: 1.5; }
+
+/* ══════════════════════════════════════
+   SCENARIOS (replaced testimonials)
+══════════════════════════════════════ */
+.scenarios-section { padding: 72px 28px; }
+.scenarios-inner { max-width: 1060px; margin: 0 auto; }
+.scenarios-disclaimer {
+  font-size: 13px; color: var(--muted); max-width: 580px;
+  margin: 0 auto 40px; text-align: center; line-height: 1.65;
+  background: var(--bg); border-radius: 10px; padding: 14px 20px;
+  border: 1px solid var(--border);
+}
+.scenarios-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.sc-card {
+  background: var(--white); border: 1.5px solid var(--border);
+  border-radius: 14px; padding: 24px;
+  box-shadow: var(--shadow);
+}
+.sc-icon { font-size: 28px; margin-bottom: 12px; }
+.sc-title {
+  font-family: var(--ff-head);
+  font-size: 16px; font-weight: 700; color: var(--navy);
+  margin-bottom: 10px;
+}
+.sc-body { font-size: 14px; color: var(--slate); line-height: 1.65; margin-bottom: 14px; }
+.sc-result {
+  background: var(--green-l);
+  border-radius: 8px; padding: 9px 12px;
+  font-size: 12.5px; font-weight: 700; color: var(--green);
+  display: flex; align-items: center; gap: 6px;
+}
+
+/* ══════════════════════════════════════
+   FINAL CTA
+══════════════════════════════════════ */
+.final-cta {
+  background: var(--orange);
+  padding: 72px 28px; text-align: center;
+  position: relative; overflow: hidden;
+}
+.final-cta::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+.final-cta-inner { position: relative; z-index: 1; max-width: 600px; margin: 0 auto; }
+.final-cta h2 {
+  font-family: var(--ff-head);
+  font-size: clamp(28px, 4vw, 44px); font-weight: 700;
+  color: #fff; margin-bottom: 14px; line-height: 1.15;
+}
+.final-cta p { font-size: 17px; color: rgba(255,255,255,.75); margin-bottom: 36px; }
+.final-cta-btns { display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; }
+.btn-final-white {
+  background: #fff; color: var(--orange);
+  font-family: var(--ff-body); font-size: 16px; font-weight: 700;
+  padding: 15px 32px; border-radius: var(--r);
+  text-decoration: none; transition: background .15s;
+  box-shadow: 0 4px 20px rgba(0,0,0,.15);
+}
+.btn-final-white:hover { background: var(--orange-l); }
+.btn-final-ghost {
+  color: rgba(255,255,255,.75); font-size: 15px; font-weight: 600;
+  text-decoration: none; transition: color .15s;
+}
+.btn-final-ghost:hover { color: #fff; }
+
+/* ══════════════════════════════════════
+   FOOTER
+══════════════════════════════════════ */
+footer {
+  background: var(--navy); padding: 28px;
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+}
+.footer-brand { font-family: var(--ff-head); font-size: 18px; font-weight: 700; color: #fff; }
+.footer-brand span { color: var(--orange-m); }
+footer p { font-size: 12.5px; color: rgba(255,255,255,.35); }
+footer a { color: rgba(255,255,255,.45); text-decoration: none; }
+
+/* ══════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════ */
+@media (max-width: 860px) {
+  .hero-inner    { grid-template-columns: 1fr; gap: 36px; padding: 52px 24px 56px; }
+  .hero-right    { display: none; }
+  .hero-sub      { max-width: 100%; }
+  .dash-inner    { grid-template-columns: 1fr; }
+  .storm-inner   { grid-template-columns: 1fr; }
+  .vs-wrap       { grid-template-columns: 1fr; }
+  .scenarios-grid { grid-template-columns: 1fr; }
+  .tier-body-inner { grid-template-columns: 1fr; }
+  nav .nav-links { display: none; }
+}
+@media (max-width: 580px) {
+  .trust-strip-inner { flex-direction: column; }
+  .trust-item { border-right: none; border-bottom: 1px solid rgba(255,255,255,.2); }
+  .trust-item:last-child { border-bottom: none; }
+  .roi-inputs { grid-template-columns: 1fr; }
+  .roi-result-grid { grid-template-columns: 1fr 1fr; }
+  .slc-grid { grid-template-columns: 1fr; }
+  .app-stats { grid-template-columns: repeat(3,1fr); }
+  nav { padding: 0 16px; }
+  .section, .pricing-section, .dash-section, .storm-section,
+  .journey-section, .roi-section, .scenarios-section { padding-left: 16px; padding-right: 16px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════ NAV ════════════════════ -->
+<nav>
+  <div class="nav-brand">Roof<span>IQ</span></div>
+  <div class="nav-links">
+    <a href="#demo">How it works</a>
+    <a href="#pricing">Pricing</a>
+    <a href="mailto:growth@ardeablue.io">Talk to us</a>
+  </div>
+  <a href="#pricing" class="nav-cta">Start Free →</a>
+</nav>
+
+<!-- ════════════════════ HERO ════════════════════ -->
+<div class="hero">
+  <svg class="hero-roof" viewBox="0 0 1440 120" preserveAspectRatio="none" fill="none">
+    <path d="M0,120 L0,80 L120,20 L240,80 L360,20 L480,80 L600,20 L720,80 L840,20 L960,80 L1080,20 L1200,80 L1320,20 L1440,80 L1440,120 Z" fill="white"/>
+  </svg>
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="hero-eyebrow">Built for roofing contractors</div>
+      <h1>
+        Your website should be<br>
+        <em>booking inspections</em><br>
+        while you're on the job.
+      </h1>
+      <p class="hero-sub">RoofIQ puts an instant roof estimator on your site — so homeowners get a price, you get a lead, and the job gets booked. No chasing. No missed calls.</p>
+      <div class="hero-ctas">
+        <a href="#pricing" class="btn-hero">Start Free — No Card Required</a>
+        <a href="#demo" class="btn-hero-ghost">See how it works ↓</a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="phone-frame">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="phone-hdr">
+            <div class="phone-hdr-co">Ridgeline Roofing</div>
+            <div class="phone-hdr-tag">Free Instant Roof Estimate</div>
+          </div>
+          <div class="phone-body">
+            <div class="phone-step">Step 3 of 4 — Your Estimate</div>
+            <div class="phone-price">$14,800 – $19,200</div>
+            <div class="phone-price-sub">Includes labor, materials &amp; permit · ZIP 85021</div>
+            <div class="phone-chips">
+              <div class="phone-chip">Medium home</div>
+              <div class="phone-chip">Medium pitch</div>
+              <div class="phone-chip">Better quality</div>
+            </div>
+            <div class="phone-lead">
+              <div class="phone-lead-lbl">Get your free consultation</div>
+              <div class="phone-lead-input">Your name</div>
+              <div class="phone-lead-input">Phone or email</div>
+              <div class="phone-lead-btn">Connect me →</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ TRUST STRIP ════════════════════ -->
+<div class="trust-strip">
+  <div class="trust-strip-inner">
+    <div class="trust-item">
+      <div class="trust-val">60 sec</div>
+      <div class="trust-lbl">For a homeowner to get an estimate</div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-val">5 min</div>
+      <div class="trust-lbl">To install on any website</div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-val">1 job</div>
+      <div class="trust-lbl">Covers the cost of RoofIQ for years</div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-val">$0</div>
+      <div class="trust-lbl">To try it on your real site first</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ PROBLEM → SOLUTION ════════════════════ -->
+<div id="demo" class="section">
+  <span class="eyebrow">The problem every roofer has</span>
+  <h2 class="section-h">Your website is leaking leads<br>every single day.</h2>
+  <p class="section-p">Homeowners visit your site, can't get a quick answer on price, and go find someone who gives them one. That someone is your competitor.</p>
+
+  <div class="vs-wrap">
+    <div class="vs-card bad">
+      <div class="vs-hd">❌ Without RoofIQ</div>
+      <div class="vs-row"><div class="vs-icon">😤</div> Homeowner visits your site, sees no pricing, leaves in under a minute</div>
+      <div class="vs-row"><div class="vs-icon">📞</div> You chase leads manually — call, leave voicemail, repeat</div>
+      <div class="vs-row"><div class="vs-icon">💸</div> Paying $50–300/lead on Angi or HomeAdvisor for the same homeowners visiting your site for free</div>
+      <div class="vs-row"><div class="vs-icon">⏳</div> Slow response time — by then, homeowners have often already called someone else</div>
+      <div class="vs-row"><div class="vs-icon">🤷</div> No way to know if a storm hit their area or if insurance might apply</div>
+    </div>
+    <div class="vs-card good">
+      <div class="vs-hd">✅ With RoofIQ</div>
+      <div class="vs-row"><div class="vs-icon">⚡</div> Homeowner gets a ZIP-adjusted, pitch-corrected estimate in 60 seconds</div>
+      <div class="vs-row"><div class="vs-icon">📲</div> You get an SMS the moment they submit — with their estimate and contact info</div>
+      <div class="vs-row"><div class="vs-icon">📅</div> They book an inspection slot before leaving your site</div>
+      <div class="vs-row"><div class="vs-icon">🛡</div> Storm damage flagged automatically — cross-checked against NOAA weather data</div>
+      <div class="vs-row"><div class="vs-icon">🤖</div> 24hr and 72hr follow-up texts sent automatically if they don't book</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ DASHBOARD MOCK ════════════════════ -->
+<div class="dash-section">
+  <div class="dash-inner">
+    <div>
+      <span class="eyebrow">Your leads dashboard</span>
+      <h2 class="section-h">See every lead, every estimate, every booking — in one place.</h2>
+      <p class="section-p">The locked row at the bottom is what makes contractors upgrade. Seeing the estimated value of homeowners who slipped through is a different kind of motivation than a feature list.</p>
+    </div>
+    <div>
+      <div class="app-mock">
+        <div class="app-topbar">
+          <div class="app-topbar-brand">Roof<span>IQ</span></div>
+          <div class="app-month-badge">Ridgeline Roofing · May 2026</div>
+        </div>
+        <div class="app-body">
+          <div class="app-stats">
+            <div class="app-stat">
+              <div class="app-stat-val green">$187K</div>
+              <div class="app-stat-lbl">Est. pipeline</div>
+            </div>
+            <div class="app-stat">
+              <div class="app-stat-val">12</div>
+              <div class="app-stat-lbl">Leads</div>
+            </div>
+            <div class="app-stat">
+              <div class="app-stat-val orange">34</div>
+              <div class="app-stat-lbl">Estimates</div>
+            </div>
+          </div>
+          <div class="app-leads">
+            <div class="app-lead booked">
+              <span class="app-badge booked">📅 Booked</span>
+              <div class="app-lead-info">
+                <div class="app-lead-name">Jane S.</div>
+                <div class="app-lead-meta">ZIP 85021 · Large · Steep · Tue May 20 10am</div>
+              </div>
+              <div class="app-lead-val">~$22,400</div>
+            </div>
+            <div class="app-lead ins">
+              <span class="app-badge ins">🛡 Insurance</span>
+              <div class="app-lead-info">
+                <div class="app-lead-name">Marcus T.</div>
+                <div class="app-lead-meta">ZIP 85032 · XL · Hail event flagged</div>
+              </div>
+              <div class="app-lead-val">~$31,200</div>
+            </div>
+            <div class="app-lead hot">
+              <span class="app-badge hot">🔥 Hot</span>
+              <div class="app-lead-info">
+                <div class="app-lead-name">Diana R.</div>
+                <div class="app-lead-meta">ZIP 85016 · Medium · Roof 20+ yrs old</div>
+              </div>
+              <div class="app-lead-val">~$18,700</div>
+            </div>
+          </div>
+          <div class="app-locked">
+            <div class="app-locked-icon">🔒</div>
+            <div class="app-locked-text">
+              <strong>22 visitors ran estimates but didn't submit</strong>
+              <span>Upgrade to Growth to re-engage these visitors</span>
+            </div>
+            <a href="#pricing" class="app-locked-btn">Unlock →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ PRICING ════════════════════ -->
+<div id="pricing" class="pricing-section">
+  <div class="pricing-inner">
+    <div class="pricing-hd">
+      <span class="eyebrow">Simple, transparent pricing</span>
+      <h2 class="section-h">Start free. Upgrade when it pays for itself.</h2>
+      <p class="section-p">One closed job covers the cost of RoofIQ for years. Every tier is built to prove its value before asking for more.</p>
+    </div>
+
+    <div class="tiers">
+
+      <!-- STARTER -->
+      <div class="tier" id="t-starter">
+        <div class="tier-hdr" data-tier="t-starter">
+          <div class="tier-hdr-left">
+            <div class="tier-name">Starter</div>
+            <div class="tier-tagline">See if it works on your site before spending a dollar.</div>
+          </div>
+          <div class="tier-hdr-right">
+            <div class="tier-price free">Free</div>
+            <div class="tier-price-sub">25 estimates · 14 days</div>
+          </div>
+          <div class="tier-chevron">▼</div>
+        </div>
+        <div class="tier-body">
+          <div class="tier-body-inner">
+            <div class="tier-features">
+              <div class="tf"><em class="icon">✓</em> Live estimator on your site</div>
+              <div class="tf"><em class="icon">✓</em> ZIP-adjusted pricing</div>
+              <div class="tf"><em class="icon">✓</em> Pitch-corrected estimate</div>
+              <div class="tf"><em class="icon">✓</em> 25 free estimates to try it</div>
+              <div class="tf locked"><em class="icon">—</em> Your logo &amp; brand colors</div>
+              <div class="tf locked"><em class="icon">—</em> Lead capture &amp; alerts</div>
+              <div class="tf locked"><em class="icon">—</em> Appointment booking</div>
+            </div>
+            <div class="tier-cta-wrap">
+              <div class="tier-cta-desc">
+                <strong>No card, no commitment.</strong>
+                Paste one line of code and the estimator is live on your site. See it work in the real world before making any decision.
+              </div>
+              <a href="mailto:growth@ardeablue.io?subject=RoofIQ Starter Trial" class="tier-btn free-btn">Get the Free Trial</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ESSENTIALS -->
+      <div class="tier" id="t-essentials">
+        <div class="tier-hdr" data-tier="t-essentials">
+          <div class="tier-hdr-left">
+            <div class="tier-name">Essentials</div>
+            <div class="tier-tagline">Your brand. Your leads. No monthly fee.</div>
+          </div>
+          <div class="tier-hdr-right">
+            <div class="tier-price">$297</div>
+            <div class="tier-price-sub">one-time · no monthly fee</div>
+          </div>
+          <div class="tier-chevron">▼</div>
+        </div>
+        <div class="tier-body">
+          <div class="tier-body-inner">
+            <div class="tier-features">
+              <div class="tf"><em class="icon">✓</em> Everything in Starter</div>
+              <div class="tf"><em class="icon">✓</em> Your logo &amp; brand colors</div>
+              <div class="tf"><em class="icon">✓</em> Unlimited estimates</div>
+              <div class="tf"><em class="icon">✓</em> Lead capture (name + contact)</div>
+              <div class="tf"><em class="icon">✓</em> Email alert on every lead</div>
+              <div class="tf"><em class="icon">✓</em> PDF estimate emailed to homeowner</div>
+              <div class="tf"><em class="icon">✓</em> Setup call — live in 5 minutes</div>
+              <div class="tf locked"><em class="icon">—</em> SMS alerts</div>
+              <div class="tf locked"><em class="icon">—</em> Appointment booking</div>
+              <div class="tf locked"><em class="icon">—</em> Leads dashboard</div>
+            </div>
+            <div class="tier-cta-wrap">
+              <div class="tier-cta-desc">
+                <strong>Pay once. Yours forever.</strong>
+                One lead that converts covers this cost many times over. No subscription, no risk — and we'll set it up with you on a call.
+              </div>
+              <a href="mailto:growth@ardeablue.io?subject=RoofIQ Essentials" class="tier-btn primary-btn">Get Essentials — $297</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GROWTH -->
+      <div class="tier featured open" id="t-growth">
+        <div class="tier-hdr" data-tier="t-growth">
+          <div class="tier-hdr-left">
+            <div class="tier-name">
+              Growth
+              <span class="tier-pill">Recommended</span>
+            </div>
+            <div class="tier-tagline">SMS alerts, booking, and lead scoring. The closer.</div>
+          </div>
+          <div class="tier-hdr-right">
+            <div class="tier-price">$297</div>
+            <div class="tier-price-sub">one-time + $79/mo · cancel anytime</div>
+          </div>
+          <div class="tier-chevron">▼</div>
+        </div>
+        <div class="tier-body">
+          <div class="tier-body-inner">
+            <div class="tier-features">
+              <div class="tf"><em class="icon">✓</em> Everything in Essentials</div>
+              <div class="tf"><em class="icon">✓</em> SMS alert to your phone — instant</div>
+              <div class="tf"><em class="icon">✓</em> Inline appointment booking</div>
+              <div class="tf"><em class="icon">✓</em> Homeowner confirmation + reminder texts</div>
+              <div class="tf"><em class="icon">✓</em> Insurance claim flag</div>
+              <div class="tf"><em class="icon">✓</em> Lead scoring — Hot / Warm / Cold</div>
+              <div class="tf"><em class="icon">✓</em> Roof age + stories qualifier</div>
+              <div class="tf"><em class="icon">✓</em> Leads dashboard</div>
+              <div class="tf"><em class="icon">✓</em> Monthly pipeline report</div>
+              <div class="tf locked"><em class="icon">—</em> AI follow-up sequences</div>
+              <div class="tf locked"><em class="icon">—</em> NOAA storm verification</div>
+            </div>
+            <div class="tier-cta-wrap">
+              <div class="tier-cta-desc">
+                <strong>This is where it pays for itself.</strong>
+                SMS alerts mean you call leads within minutes, not hours. Booking means they lock in an inspection before they shop around. The dashboard shows you what's working.
+              </div>
+              <a href="mailto:growth@ardeablue.io?subject=RoofIQ Growth" class="tier-btn orange-btn">Get Growth — $297 + $79/mo</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PRO -->
+      <div class="tier" id="t-pro">
+        <div class="tier-hdr" data-tier="t-pro">
+          <div class="tier-hdr-left">
+            <div class="tier-name">Pro</div>
+            <div class="tier-tagline">AI follow-up, storm intelligence, and multi-location.</div>
+          </div>
+          <div class="tier-hdr-right">
+            <div class="tier-price">$297</div>
+            <div class="tier-price-sub">one-time + $149/mo · cancel anytime</div>
+          </div>
+          <div class="tier-chevron">▼</div>
+        </div>
+        <div class="tier-body">
+          <div class="tier-body-inner">
+            <div class="tier-features">
+              <div class="tf"><em class="icon">✓</em> Everything in Growth</div>
+              <div class="tf"><em class="icon">✓</em> AI SMS follow-up (24hr, 72hr, 7-day)</div>
+              <div class="tf"><em class="icon">✓</em> NOAA storm event verification</div>
+              <div class="tf"><em class="icon">✓</em> Insurance lead conversation starters</div>
+              <div class="tf"><em class="icon">✓</em> Multi-location / franchise support</div>
+              <div class="tf"><em class="icon">✓</em> Quarterly pricing calibration call</div>
+              <div class="tf"><em class="icon">✓</em> Priority support — 4hr response</div>
+            </div>
+            <div class="tier-cta-wrap">
+              <div class="tier-cta-desc">
+                <strong>Built for contractors who run a real operation.</strong>
+                Storm intelligence alone can surface insurance-eligible leads before your competitors even know the storm happened. In a busy storm season, Pro can pay for itself many times over.
+              </div>
+              <a href="mailto:growth@ardeablue.io?subject=RoofIQ Pro" class="tier-btn primary-btn">Get Pro — $297 + $149/mo</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ JOURNEY ════════════════════ -->
+<div class="journey-section">
+  <div class="journey-inner">
+    <span class="eyebrow" style="display:block;">The upgrade path</span>
+    <h2 class="section-h">You'll upgrade yourself. Here's how.</h2>
+    <p class="section-p">Every tier proves its value before the next one becomes obvious. This is the arc most contractors follow.</p>
+
+    <div class="journey">
+      <div class="journey-step">
+        <div class="j-num n0">0</div>
+        <div class="j-content">
+          <strong>You install the free trial</strong>
+          <p>Takes 5 minutes. You paste one line of code and the estimator is live. You tell yourself you'll check on it — and forget about it.</p>
+        </div>
+      </div>
+      <div class="journey-step">
+        <div class="j-num n1">1</div>
+        <div class="j-content">
+          <strong>A homeowner runs an estimate at 11pm</strong>
+          <p>You check your site analytics the next morning. Someone spent 4 minutes on your site and ran an estimate. You didn't get their contact info — the trial doesn't capture leads. That's the trigger.</p>
+          <span class="j-trigger">→ Upgrade to Essentials · $297 one-time</span>
+        </div>
+      </div>
+      <div class="journey-step">
+        <div class="j-num n2">2</div>
+        <div class="j-content">
+          <strong>First real lead comes in — by email</strong>
+          <p>A homeowner submits their contact info. You see the email 3 hours later when you check your inbox. By then they've already scheduled with someone else. You start wishing you'd gotten a text.</p>
+          <span class="j-trigger">→ Upgrade to Growth · + $79/mo</span>
+        </div>
+      </div>
+      <div class="journey-step">
+        <div class="j-num n3">3</div>
+        <div class="j-content">
+          <strong>You open your dashboard and see the locked row</strong>
+          <p>Twenty-two homeowners ran estimates this month and never submitted contact info. The dashboard shows their estimated value but locks the re-engagement tools. That number stays in your head.</p>
+          <span class="j-trigger">→ Upgrade to Pro for AI follow-up · + $149/mo</span>
+        </div>
+      </div>
+      <div class="journey-step">
+        <div class="j-num n4">4</div>
+        <div class="j-content">
+          <strong>A storm hits your market. RoofIQ flags the leads.</strong>
+          <p>Homeowners who flagged storm damage get cross-checked against NOAA data. Their leads are surfaced with context for your call. You're having informed conversations before most contractors have even heard about the storm.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ STORM FEATURE ════════════════════ -->
+<div class="storm-section">
+  <div class="storm-inner">
+    <div>
+      <span class="eyebrow">Pro exclusive — Storm Intelligence</span>
+      <h2 class="section-h">Insurance claims can yield higher job values. We help you spot them.</h2>
+      <p class="section-p">When a homeowner flags storm damage, RoofIQ checks NOAA weather event data for their ZIP. If a qualifying event occurred, you get the lead flagged and a suggested conversation opener — so you're prepared before the call.</p>
+      <div class="storm-bullets">
+        <div class="sb">
+          <div class="sb-icon">🌩</div>
+          <div class="sb-text">
+            <strong>NOAA storm event cross-reference</strong>
+            <span>Weather data matched to the homeowner's ZIP and reported timeframe — gives you real context</span>
+          </div>
+        </div>
+        <div class="sb">
+          <div class="sb-icon">📋</div>
+          <div class="sb-text">
+            <strong>Suggested conversation opener included</strong>
+            <span>A starting point for the call — actual coverage always depends on the homeowner's policy and adjuster</span>
+          </div>
+        </div>
+        <div class="sb">
+          <div class="sb-icon">⏱</div>
+          <div class="sb-text">
+            <strong>First to inspect is usually first to close</strong>
+            <span>Storm-affected homeowners move fast — being prepared before the first call puts you ahead</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="storm-lead-card">
+        <div class="slc-hdr">
+          <div class="slc-icon">🛡</div>
+          <div class="slc-hdr-text">
+            <strong>Marcus T. — Storm Damage Flagged</strong>
+            <span>Submitted via RoofIQ · May 14, 2026</span>
+          </div>
+          <span class="slc-verified">✓ NOAA Match</span>
+        </div>
+        <div class="slc-body">
+          <div class="slc-grid">
+            <div class="slc-field">
+              <label>ZIP Code</label>
+              <span>85032 · Phoenix, AZ</span>
+            </div>
+            <div class="slc-field">
+              <label>Estimate</label>
+              <span>~$31,200</span>
+            </div>
+            <div class="slc-field">
+              <label>NOAA Event</label>
+              <span>Hail · May 9, 2026</span>
+            </div>
+            <div class="slc-field">
+              <label>Hail Size</label>
+              <span>1.25" diameter</span>
+            </div>
+          </div>
+          <div class="slc-script">
+            <label>💬 Suggested conversation opener</label>
+            <p>"Hi Marcus, we pulled weather data and there was a hail event near your area on May 9th. It may be worth a free inspection to see if there's any damage worth documenting for your insurer. When's a good time to come take a look?"</p>
+            <div class="slc-disclaimer">Actual coverage depends on the homeowner's policy, deductible, and adjuster assessment. This is a starting point, not a guarantee.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ ROI CALCULATOR ════════════════════ -->
+<div class="roi-section">
+  <div class="roi-inner">
+    <span class="eyebrow" style="display:block;text-align:center;">Run your own numbers</span>
+    <h2 class="section-h" style="text-align:center;">Does RoofIQ pay for itself?</h2>
+    <p class="section-p" style="text-align:center;margin:0 auto 32px;">Put in your numbers. See the math.</p>
+
+    <div class="roi-card">
+      <div class="roi-inputs">
+        <div class="roi-field">
+          <label>Monthly website visitors</label>
+          <input type="number" id="roi-visitors" value="400" min="0">
+        </div>
+        <div class="roi-field">
+          <label>Average job value ($)</label>
+          <input type="number" id="roi-job-val" value="14000" min="0">
+        </div>
+        <div class="roi-field">
+          <label>Your close rate (%)</label>
+          <input type="number" id="roi-close" value="25" min="0" max="100">
+        </div>
+        <div class="roi-field">
+          <label>Your plan</label>
+          <select id="roi-plan">
+            <option value="0">Essentials — $297 one-time</option>
+            <option value="79" selected>Growth — $297 + $79/mo</option>
+            <option value="149">Pro — $297 + $149/mo</option>
+          </select>
+        </div>
+      </div>
+      <div class="roi-result">
+        <div class="roi-result-grid">
+          <div class="roi-stat">
+            <label>Est. leads/mo</label>
+            <div class="val" id="roi-leads">—</div>
+          </div>
+          <div class="roi-stat">
+            <label>Est. revenue added</label>
+            <div class="val green" id="roi-revenue">—</div>
+          </div>
+          <div class="roi-stat">
+            <label>Payback period</label>
+            <div class="val" id="roi-payback">—</div>
+          </div>
+        </div>
+        <div class="roi-summary" id="roi-summary">Enter your numbers above to see your ROI.</div>
+        <div class="roi-disclaimer">Assumes ~3% of visitors engage the estimator and ~35% submit contact info. Results vary based on your market, traffic quality, and follow-up speed. This is a projection, not a guarantee.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ SCENARIOS ════════════════════ -->
+<div class="scenarios-section">
+  <div class="scenarios-inner">
+    <span class="eyebrow" style="display:block;text-align:center;">What success looks like</span>
+    <h2 class="section-h" style="text-align:center;">Real scenarios from roofing contractors.</h2>
+    <div class="scenarios-disclaimer">RoofIQ is early-stage. These scenarios reflect realistic outcomes based on how the tool works — not verified customer data. We'll replace these with real contractor stories as we grow.</div>
+    <div class="scenarios-grid">
+      <div class="sc-card">
+        <div class="sc-icon">🏠</div>
+        <div class="sc-title">The contractor with steady site traffic</div>
+        <div class="sc-body">A roofing company with 400 monthly visitors and a 25% close rate could expect 4–5 qualified leads per month from the estimator alone — from traffic they're already paying for through SEO or ads.</div>
+        <div class="sc-result">✓ Est. 4–5 leads/mo from existing traffic</div>
+      </div>
+      <div class="sc-card">
+        <div class="sc-icon">📲</div>
+        <div class="sc-title">The contractor who responds fastest</div>
+        <div class="sc-body">Research on lead response consistently shows contact rates drop sharply after the first hour. SMS alerts let contractors respond within minutes — which is often the difference between winning and losing the job.</div>
+        <div class="sc-result">✓ Fast response = higher contact rate</div>
+      </div>
+      <div class="sc-card">
+        <div class="sc-icon">🌩</div>
+        <div class="sc-title">The contractor in a storm market</div>
+        <div class="sc-body">In storm-active markets, contractors who identify insurance-eligible leads early get to the homeowner first. Being first to the inspection is typically the highest-leverage action in a post-storm market.</div>
+        <div class="sc-result">✓ First to inspect = highest close rate</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ FINAL CTA ════════════════════ -->
+<div class="final-cta">
+  <div class="final-cta-inner">
+    <h2>One lead pays for this.<br>Many times over.</h2>
+    <p>Start free. No credit card. Live on your site in 5 minutes.</p>
+    <div class="final-cta-btns">
+      <a href="#pricing" class="btn-final-white">Start Free Today →</a>
+      <a href="mailto:growth@ardeablue.io" class="btn-final-ghost">Talk to us first</a>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ FOOTER ════════════════════ -->
+<footer>
+  <div class="footer-brand">Roof<span>IQ</span></div>
+  <p>Built by <a href="mailto:growth@ardeablue.io">Ardeablue</a> · Questions? growth@ardeablue.io</p>
+</footer>
+
+<script>
+/* ── Accordion tiers ── */
+document.querySelectorAll('.tier-hdr').forEach(hdr => {
+  hdr.addEventListener('click', () => {
+    const tier = document.getElementById(hdr.getAttribute('data-tier'));
+    const isOpen = tier.classList.contains('open');
+    // Close all
+    document.querySelectorAll('.tier').forEach(t => t.classList.remove('open'));
+    // Toggle clicked
+    if (!isOpen) tier.classList.add('open');
+  });
+});
+
+/* ── ROI Calculator ── */
+function calcROI() {
+  const visitors = parseFloat(document.getElementById('roi-visitors').value) || 0;
+  const jobVal   = parseFloat(document.getElementById('roi-job-val').value)  || 0;
+  const close    = parseFloat(document.getElementById('roi-close').value)    || 0;
+  const monthly  = parseFloat(document.getElementById('roi-plan').value)     || 0;
+
+  const leads   = visitors * 0.03 * 0.35;
+  const revenue = leads * (close / 100) * jobVal;
+  const cost    = 297 + monthly;
+  const days    = revenue > 0 ? Math.ceil((cost / revenue) * 30) : null;
+
+  const fmt = n => '$' + Math.round(n).toLocaleString('en-US');
+
+  document.getElementById('roi-leads').textContent   = Math.round(leads) + '/mo';
+  document.getElementById('roi-revenue').textContent = fmt(revenue) + '/mo';
+  document.getElementById('roi-payback').textContent = days
+    ? (days < 30 ? days + ' days' : Math.ceil(days/30) + ' mo') : '—';
+  document.getElementById('roi-summary').textContent = leads > 0
+    ? `With ${Math.round(leads)} leads/month at a ${close}% close rate, RoofIQ could add an estimated ${fmt(revenue)}/month in pipeline. At that rate, you'd recover the full cost in ${days} day${days===1?'':'s'}.`
+    : 'Enter your numbers above to see your ROI.';
+}
+['roi-visitors','roi-job-val','roi-close','roi-plan'].forEach(id =>
+  document.getElementById(id).addEventListener('input', calcROI));
+calcROI();
+</script>
+</body>
+</html>

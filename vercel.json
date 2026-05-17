@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "routes": [
+    { "src": "/widget.js",        "dest": "/public/widget.js" },
+    { "src": "/api/(.*)",         "dest": "/api/$1" },
+    { "src": "/dashboard/(.*)",   "dest": "/dashboard/$1" },
+    { "src": "/",                 "dest": "/public/index.html" },
+    { "src": "/(.*)",             "dest": "/public/$1" }
+  ],
+  "env": {
+    "SUPABASE_URL":      "@supabase_url",
+    "SUPABASE_ANON_KEY": "@supabase_anon_key",
+    "SUPABASE_SERVICE_KEY": "@supabase_service_key",
+    "SENDGRID_API_KEY":  "@sendgrid_api_key",
+    "TWILIO_SID":        "@twilio_sid",
+    "TWILIO_TOKEN":      "@twilio_token",
+    "TWILIO_FROM":       "@twilio_from"
+  }
+}

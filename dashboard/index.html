@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RoofIQ Dashboard</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@600;700&family=DM+Sans:wght@400;500;600;700&display=swap');
+:root{--orange:#c84b11;--orange-l:#fef0e8;--navy:#1b2b4b;--navy-l:#e8ecf3;--slate:#4a5568;--muted:#718096;--border:#e2e8f0;--bg:#f7f6f3;--white:#fff;--green:#276749;--green-l:#ebf5ee;--r:10px;--ff:'DM Sans',sans-serif;--fh:'Zilla Slab',serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--ff);background:var(--bg);color:var(--navy);min-height:100vh;-webkit-font-smoothing:antialiased}
+/* Nav */
+nav{background:var(--navy);height:58px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.nav-brand{font-family:var(--fh);font-size:20px;color:#fff}
+.nav-brand span{color:#f4793a}
+.nav-right{display:flex;align-items:center;gap:14px}
+.nav-co{font-size:13px;color:rgba(255,255,255,.55)}
+.nav-plan{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:4px 10px;border-radius:4px;background:rgba(200,75,17,.25);color:#f4793a}
+.nav-out{font-size:13px;color:rgba(255,255,255,.4);cursor:pointer;text-decoration:none}
+/* Login */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.login-card{background:var(--white);border:1.5px solid var(--border);border-radius:16px;padding:36px 32px;width:100%;max-width:400px;box-shadow:0 4px 24px rgba(0,0,0,.07)}
+.login-card h1{font-family:var(--fh);font-size:26px;color:var(--navy);margin-bottom:6px}
+.login-card p{font-size:14px;color:var(--muted);margin-bottom:24px}
+.lf{margin-bottom:14px}
+.lf label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:6px}
+.lf input{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:var(--r);font-family:var(--ff);font-size:15px;color:var(--navy);outline:none;transition:border-color .15s}
+.lf input:focus{border-color:var(--orange)}
+.btn-login{width:100%;padding:14px;background:var(--orange);color:#fff;border:none;border-radius:var(--r);font-family:var(--ff);font-size:16px;font-weight:700;cursor:pointer;margin-top:6px;transition:background .15s}
+.btn-login:hover{background:#a03a0a}
+.login-err{font-size:13px;color:#9b2c1a;background:#fef2f0;border:1px solid #fcd5cc;border-radius:8px;padding:9px 12px;margin-bottom:12px}
+/* Main layout */
+.main{max-width:1060px;margin:0 auto;padding:28px 20px}
+/* Stats strip */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.stat-card{background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:18px 20px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.stat-val{font-family:var(--fh);font-size:28px;font-weight:700;color:var(--navy);line-height:1}
+.stat-val.green{color:var(--green)}
+.stat-val.orange{color:var(--orange)}
+.stat-lbl{font-size:11.5px;color:var(--muted);margin-top:5px}
+/* Locked row */
+.locked-bar{background:#fff8f4;border:1.5px dashed #f4a87c;border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:14px;margin-bottom:24px}
+.locked-bar .lb-icon{font-size:22px;flex-shrink:0}
+.locked-bar .lb-text{flex:1}
+.locked-bar .lb-text strong{font-size:14px;font-weight:700;color:var(--orange);display:block}
+.locked-bar .lb-text span{font-size:12.5px;color:var(--muted)}
+.locked-bar .lb-btn{background:var(--orange);color:#fff;font-family:var(--ff);font-size:13px;font-weight:700;padding:9px 18px;border-radius:8px;text-decoration:none;white-space:nowrap;transition:background .15s;flex-shrink:0}
+.locked-bar .lb-btn:hover{background:#a03a0a}
+/* Section header */
+.sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.sec-hdr h2{font-family:var(--fh);font-size:20px;font-weight:700;color:var(--navy)}
+.filter-tabs{display:flex;gap:6px}
+.ftab{padding:6px 14px;border-radius:20px;font-size:12.5px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:var(--white);color:var(--muted);transition:all .15s}
+.ftab.active{background:var(--navy);border-color:var(--navy);color:#fff}
+/* Leads table */
+.leads-wrap{background:var(--white);border:1.5px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.lead-row{display:flex;align-items:center;gap:14px;padding:14px 18px;border-bottom:1px solid var(--border);transition:background .15s}
+.lead-row:last-child{border-bottom:none}
+.lead-row:hover{background:var(--bg)}
+.lead-score{flex-shrink:0}
+.score-dot{width:10px;height:10px;border-radius:50%}
+.score-dot.hot{background:var(--orange)}
+.score-dot.warm{background:#f59e0b}
+.score-dot.cold{background:#a0aec0}
+.lead-main{flex:1;min-width:0}
+.lead-name{font-size:14px;font-weight:700;color:var(--navy)}
+.lead-meta{font-size:11.5px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lead-badges{display:flex;gap:5px;flex-wrap:wrap;margin-top:4px}
+.badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:.3px}
+.badge.ins{background:rgba(124,58,237,.1);color:#7c3aed}
+.badge.booked{background:var(--green-l);color:var(--green)}
+.badge.hot{background:var(--orange-l);color:var(--orange)}
+.badge.new{background:var(--navy-l);color:var(--navy)}
+.lead-val{font-family:var(--fh);font-size:16px;font-weight:700;color:var(--green);flex-shrink:0}
+.lead-contact{font-size:12px;color:var(--muted);text-align:right;flex-shrink:0}
+.lead-contact a{color:var(--orange);text-decoration:none;font-weight:600}
+.lead-status{flex-shrink:0}
+.status-sel{padding:5px 10px;border:1.5px solid var(--border);border-radius:7px;font-family:var(--ff);font-size:12px;font-weight:600;color:var(--navy);background:var(--bg);cursor:pointer;outline:none}
+.empty-state{text-align:center;padding:52px 24px;color:var(--muted);font-size:14px}
+.empty-icon{font-size:36px;margin-bottom:12px}
+/* Upgrade banner */
+.upgrade-banner{background:linear-gradient(135deg,var(--navy) 0%,#253554 100%);border-radius:14px;padding:24px 28px;margin-bottom:24px;display:flex;align-items:center;gap:24px}
+.ub-text h3{font-family:var(--fh);font-size:18px;color:#fff;margin-bottom:4px}
+.ub-text p{font-size:13px;color:rgba(255,255,255,.55);line-height:1.5}
+.ub-btn{background:var(--orange);color:#fff;font-family:var(--ff);font-size:14px;font-weight:700;padding:12px 22px;border-radius:var(--r);text-decoration:none;white-space:nowrap;flex-shrink:0;transition:background .15s}
+.ub-btn:hover{background:#a03a0a}
+/* Loading */
+.loading{text-align:center;padding:60px;color:var(--muted);font-size:14px}
+.spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--orange);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 16px}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* Responsive */
+@media(max-width:760px){.stats{grid-template-columns:1fr 1fr}.main{padding:16px}.lead-row{flex-wrap:wrap}.lead-contact,.lead-status{width:100%;text-align:left}.lead-val{width:100%;font-size:18px}}
+@media(max-width:480px){.stats{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div id="app"></div>
+
+<script>
+const BASE = ''; // same origin on Vercel
+
+/* ── State ── */
+let KEY = localStorage.getItem('riq_key') || '';
+let DATA = null;
+let filter = 'all';
+let loading = false;
+
+const app = document.getElementById('app');
+
+/* ── Render ── */
+function render() {
+  if (!KEY) { app.innerHTML = loginHTML(); bindLogin(); return; }
+  if (loading) { app.innerHTML = navHTML() + `<div class="main"><div class="loading"><div class="spinner"></div>Loading your dashboard…</div></div>`; return; }
+  if (!DATA) { loadData(); return; }
+  app.innerHTML = navHTML() + mainHTML();
+  bindMain();
+}
+
+function navHTML() {
+  const co   = DATA?.company?.name || 'Your Company';
+  const plan = DATA?.company?.plan || '';
+  return `<nav>
+    <div class="nav-brand">Roof<span>IQ</span></div>
+    <div class="nav-right">
+      <span class="nav-co">${co}</span>
+      ${plan ? `<span class="nav-plan">${plan}</span>` : ''}
+      <a class="nav-out" onclick="logout()">Sign out</a>
+    </div>
+  </nav>`;
+}
+
+function loginHTML() {
+  return `<div class="login-wrap">
+    <div class="login-card">
+      <h1>RoofIQ Dashboard</h1>
+      <p>Enter your API key to view your leads and pipeline.</p>
+      <div id="login-err"></div>
+      <div class="lf"><label>Your API Key</label>
+        <input type="text" id="lkey" placeholder="e.g. a1b2c3d4..." value="${KEY}">
+      </div>
+      <button class="btn-login" onclick="doLogin()">View My Dashboard →</button>
+      <p style="font-size:12px;color:#a0aec0;margin-top:14px;text-align:center">Find your key in your RoofIQ welcome email or at roofiq.io/account</p>
+    </div>
+  </div>`;
+}
+
+function mainHTML() {
+  const s = DATA.stats;
+  const plan = DATA.company?.plan || 'starter';
+  const leads = filteredLeads();
+
+  const upgradeBanner = ['starter','essentials'].includes(plan) ? `
+    <div class="upgrade-banner">
+      <div class="ub-text">
+        <h3>${plan === 'starter' ? 'Your trial is running — upgrade before it ends' : 'Missing leads? Upgrade to Growth for SMS alerts & booking'}</h3>
+        <p>${plan === 'starter' ? 'Get your branding on the widget, unlimited estimates, and real lead capture.' : 'Get instant SMS alerts, appointment booking, and lead scoring.'}</p>
+      </div>
+      <a href="https://roofiq.io/#pricing" target="_blank" class="ub-btn">Upgrade Now →</a>
+    </div>` : '';
+
+  const lockedBar = s.unconverted > 0 && !['growth','pro'].includes(plan) ? `
+    <div class="locked-bar">
+      <div class="lb-icon">🔒</div>
+      <div class="lb-text">
+        <strong>${s.unconverted} visitor${s.unconverted===1?'':' s'} ran estimates this month but didn't submit contact info</strong>
+        <span>Upgrade to Growth to re-engage these visitors — estimated ${fmt(s.unconverted_est_value)} in unconverted pipeline</span>
+      </div>
+      <a href="https://roofiq.io/#pricing" target="_blank" class="lb-btn">Unlock →</a>
+    </div>` : '';
+
+  const leadsHTML = leads.length ? leads.map(leadRowHTML).join('') : `
+    <div class="empty-state">
+      <div class="empty-icon">📭</div>
+      <div>No leads yet${filter!=='all'?' in this category':''}.</div>
+      <div style="margin-top:8px;font-size:13px;">Make sure your widget is installed and you have a paid plan.</div>
+    </div>`;
+
+  return `<div class="main">
+    ${upgradeBanner}
+
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-val green">${fmt(s.pipeline_this_month)}</div>
+        <div class="stat-lbl">Estimated pipeline this month</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val">${s.leads_this_month}</div>
+        <div class="stat-lbl">Leads captured this month</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val orange">${s.estimates_this_month}</div>
+        <div class="stat-lbl">Estimates run this month</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val" style="color:#a0aec0">${s.unconverted}</div>
+        <div class="stat-lbl">Ran estimate — no contact submitted</div>
+      </div>
+    </div>
+
+    ${lockedBar}
+
+    <div class="sec-hdr">
+      <h2>Your Leads</h2>
+      <div class="filter-tabs">
+        ${['all','hot','booked','new'].map(f=>`<div class="ftab${filter===f?' active':''}" onclick="setFilter('${f}')">${f.charAt(0).toUpperCase()+f.slice(1)}</div>`).join('')}
+      </div>
+    </div>
+
+    <div class="leads-wrap">${leadsHTML}</div>
+
+    <p style="font-size:11px;color:#a0aec0;margin-top:16px;text-align:center">Pipeline values are estimates from the widget — verify before reporting.</p>
+  </div>`;
+}
+
+function leadRowHTML(lead) {
+  const val    = lead.est_mid ? fmt(lead.est_mid) : '—';
+  const name   = lead.name || 'Anonymous';
+  const contact= lead.phone || lead.email || '—';
+  const loc    = [lead.city, lead.state].filter(Boolean).join(', ') || `ZIP ${lead.zip_code}`;
+  const date   = new Date(lead.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  const meta   = [loc, lead.quality_id, lead.roof_age, date].filter(Boolean).join(' · ');
+
+  const badges = [];
+  if(lead.insurance_flag) badges.push(`<span class="badge ins">🛡 Insurance</span>`);
+  if(lead.status==='booked') badges.push(`<span class="badge booked">📅 Booked</span>`);
+  if(lead.score==='hot' && lead.status!=='booked') badges.push(`<span class="badge hot">🔥 Hot</span>`);
+  if(lead.status==='new' && lead.score!=='hot') badges.push(`<span class="badge new">New</span>`);
+
+  const statuses = ['new','contacted','booked','closed','lost'];
+
+  return `<div class="lead-row">
+    <div class="lead-score"><div class="score-dot ${lead.score||'warm'}"></div></div>
+    <div class="lead-main">
+      <div class="lead-name">${name}</div>
+      <div class="lead-meta">${meta}</div>
+      ${badges.length?`<div class="lead-badges">${badges.join('')}</div>`:''}
+    </div>
+    <div class="lead-contact">
+      ${lead.phone?`<a href="tel:${lead.phone}">${lead.phone}</a>`:''}
+      ${lead.email?`<div><a href="mailto:${lead.email}">${lead.email}</a></div>`:''}
+    </div>
+    <div class="lead-val">${val}</div>
+    <div class="lead-status">
+      <select class="status-sel" onchange="updateStatus('${lead.id}',this.value)">
+        ${statuses.map(s=>`<option value="${s}"${lead.status===s?' selected':''}>${s.charAt(0).toUpperCase()+s.slice(1)}</option>`).join('')}
+      </select>
+    </div>
+  </div>`;
+}
+
+/* ── Helpers ── */
+function fmt(n) { return '$' + Math.round(n||0).toLocaleString('en-US'); }
+
+function filteredLeads() {
+  const leads = DATA?.leads || [];
+  if(filter==='all')    return leads;
+  if(filter==='hot')    return leads.filter(l=>l.score==='hot'||l.insurance_flag);
+  if(filter==='booked') return leads.filter(l=>l.status==='booked');
+  if(filter==='new')    return leads.filter(l=>l.status==='new');
+  return leads;
+}
+
+/* ── Actions ── */
+async function doLogin() {
+  const k = document.getElementById('lkey')?.value?.trim();
+  if(!k){ showLoginErr('Please enter your API key.'); return; }
+  KEY = k;
+  loading = true;
+  render();
+  try {
+    const res = await fetch(`/api/dashboard?key=${encodeURIComponent(KEY)}`);
+    if(!res.ok) throw new Error('Invalid key');
+    DATA = await res.json();
+    localStorage.setItem('riq_key', KEY);
+    loading = false;
+    render();
+  } catch(e) {
+    loading = false;
+    KEY = '';
+    render();
+    setTimeout(()=>showLoginErr('Invalid API key. Check your welcome email and try again.'),50);
+  }
+}
+
+async function loadData() {
+  loading = true;
+  render();
+  try {
+    const res = await fetch(`/api/dashboard?key=${encodeURIComponent(KEY)}`);
+    if(!res.ok) throw new Error('Bad key');
+    DATA = await res.json();
+  } catch(e) {
+    KEY=''; localStorage.removeItem('riq_key');
+  }
+  loading = false;
+  render();
+}
+
+async function updateStatus(leadId, status) {
+  await fetch(`/api/dashboard?key=${encodeURIComponent(KEY)}`, {
+    method:'PATCH',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ lead_id:leadId, status }),
+  }).catch(()=>{});
+  // Update local state
+  const lead = DATA.leads.find(l=>l.id===leadId);
+  if(lead) lead.status = status;
+}
+
+function setFilter(f) { filter=f; render(); }
+function logout() { KEY=''; DATA=null; localStorage.removeItem('riq_key'); render(); }
+function showLoginErr(msg) {
+  const el = document.getElementById('login-err');
+  if(el) el.innerHTML=`<div class="login-err">${msg}</div>`;
+}
+
+/* ── Bind ── */
+function bindLogin() {
+  const inp = document.getElementById('lkey');
+  if(inp) inp.addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+}
+function bindMain() {} // event handlers are inline for simplicity
+
+render();
+</script>
+</body>
+</html>

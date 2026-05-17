@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Roof Estimator Widget — Live Demo</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Barlow', sans-serif;
+    background: #f0f2f7;
+    color: #1a1d23;
+    min-height: 100vh;
+  }
+
+  /* ── Top nav ── */
+  nav {
+    background: #1a1d23;
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+  }
+  nav .nav-brand {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: .5px;
+  }
+  nav .nav-cta {
+    background: #f59e0b;
+    color: #1a1d23;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 8px 20px;
+    border-radius: 7px;
+    text-decoration: none;
+    letter-spacing: .4px;
+    text-transform: uppercase;
+    transition: background .15s;
+  }
+  nav .nav-cta:hover { background: #fbbf24; }
+
+  /* ── Hero ── */
+  .hero {
+    background: #1a1d23;
+    color: #fff;
+    text-align: center;
+    padding: 52px 24px 44px;
+  }
+  .hero .demo-pill {
+    display: inline-block;
+    background: rgba(245,158,11,.15);
+    color: #fbbf24;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .8px;
+    padding: 5px 14px;
+    border-radius: 20px;
+    margin-bottom: 18px;
+    border: 1px solid rgba(245,158,11,.3);
+  }
+  .hero h1 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 42px;
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 14px;
+    letter-spacing: .3px;
+  }
+  .hero h1 span { color: #f59e0b; }
+  .hero p {
+    font-size: 17px;
+    color: rgba(255,255,255,.65);
+    max-width: 560px;
+    margin: 0 auto 28px;
+    line-height: 1.6;
+  }
+  .hero .hero-stats {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+  .hero .stat { text-align: center; }
+  .hero .stat-val {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: #fff;
+  }
+  .hero .stat-lbl { font-size: 12px; color: rgba(255,255,255,.5); margin-top: 2px; }
+
+  /* ── Layout ── */
+  .page { max-width: 1100px; margin: 0 auto; padding: 40px 24px; display: grid; grid-template-columns: 1.2fr 1fr; gap: 36px; align-items: start; }
+
+  /* ── Widget column ── */
+  .widget-col {}
+  .widget-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .7px;
+    color: #6b7280;
+    margin-bottom: 12px;
+  }
+
+  /* ── Info column ── */
+  .info-col {}
+
+  .info-card {
+    background: #fff;
+    border-radius: 14px;
+    border: 1px solid #e2e5ea;
+    padding: 26px;
+    margin-bottom: 18px;
+    box-shadow: 0 2px 10px rgba(0,0,0,.04);
+  }
+
+  .info-card h2 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: #1a1d23;
+    margin-bottom: 16px;
+  }
+
+  .feature-list { list-style: none; display: flex; flex-direction: column; gap: 11px; }
+  .feature-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 14px;
+    color: #374151;
+    line-height: 1.5;
+  }
+  .feature-list li .check {
+    width: 20px;
+    height: 20px;
+    min-width: 20px;
+    background: #dcfce7;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: #166534;
+    margin-top: 1px;
+    font-weight: 700;
+  }
+
+  /* pricing card */
+  .price-card {
+    background: #1a56db;
+    border-radius: 14px;
+    padding: 26px;
+    margin-bottom: 18px;
+    color: #fff;
+  }
+  .price-card .pc-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .7px;
+    color: rgba(255,255,255,.6);
+    margin-bottom: 6px;
+  }
+  .price-card .pc-price {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 48px;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .price-card .pc-sub {
+    font-size: 13px;
+    color: rgba(255,255,255,.7);
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+  .price-card .pc-btn {
+    display: block;
+    width: 100%;
+    padding: 13px;
+    background: #f59e0b;
+    color: #1a1d23;
+    border: none;
+    border-radius: 9px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    text-align: center;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+    cursor: pointer;
+    transition: background .15s;
+  }
+  .price-card .pc-btn:hover { background: #fbbf24; }
+  .price-card .pc-note {
+    font-size: 12px;
+    color: rgba(255,255,255,.55);
+    text-align: center;
+    margin-top: 10px;
+  }
+
+  /* testimonial */
+  .testimonial {
+    background: #fff;
+    border-radius: 14px;
+    border: 1px solid #e2e5ea;
+    padding: 22px 26px;
+    box-shadow: 0 2px 10px rgba(0,0,0,.04);
+  }
+  .testimonial .quote {
+    font-size: 15px;
+    color: #374151;
+    line-height: 1.7;
+    font-style: italic;
+    margin-bottom: 14px;
+  }
+  .testimonial .author {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1a1d23;
+  }
+  .testimonial .role { font-size: 12px; color: #6b7280; margin-top: 2px; }
+
+  /* embed preview */
+  .embed-preview {
+    background: #1a1d23;
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin-top: 18px;
+  }
+  .embed-preview .ep-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .6px;
+    color: rgba(255,255,255,.4);
+    margin-bottom: 8px;
+  }
+  .embed-preview code {
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    color: #a3e635;
+    line-height: 1.7;
+    display: block;
+    word-break: break-all;
+  }
+
+  /* footer */
+  footer {
+    background: #1a1d23;
+    text-align: center;
+    padding: 28px;
+    margin-top: 20px;
+  }
+  footer p { font-size: 13px; color: rgba(255,255,255,.4); }
+
+  @media (max-width: 780px) {
+    .page { grid-template-columns: 1fr; }
+    .info-col { order: -1; }
+    .hero h1 { font-size: 30px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">RoofIQ</div>
+  <a href="mailto:growth@ardeablue.io?subject=I'm interested in RoofIQ&body=Hi, I tried the RoofIQ estimator and I'm interested in adding it to my website.%0D%0A%0D%0AMy company name is: %0D%0AMy website is: %0D%0AMy phone number is: %0D%0AThe best time to reach me is: " class="nav-cta">Get it — $497 today</a>
+</nav>
+
+<div class="hero">
+  <div class="demo-pill">Live Demo — Try it now</div>
+  <h1>Give your customers an <span>instant roof estimate</span><br>right on your website</h1>
+  <p>A professional pricing calculator your customers use themselves — so you spend less time on quotes and more time on jobs.</p>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-val">5 min</div><div class="stat-lbl">to install on any site</div></div>
+    <div class="stat"><div class="stat-val">$0</div><div class="stat-lbl">for your customers to use</div></div>
+    <div class="stat"><div class="stat-val">$595</div><div class="stat-lbl">one-time, yours forever</div></div>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- LIVE WIDGET -->
+  <div class="widget-col">
+    <div class="widget-label">👇 This is what goes on your website — try it</div>
+    <script
+      src="./widget-trial.js"
+      data-company="Demo Roofing Co."
+      data-color="#1a56db"
+      data-upgrade-url="#buy"
+      data-target="demo-widget">
+    </script>
+    <div id="demo-widget"></div>
+
+    <div class="embed-preview">
+      <div class="ep-label">What you paste into your website — one line</div>
+      <code>&lt;script src="https://getroofiq.com/widget.js"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data-key="YOUR_KEY"&gt;&lt;/script&gt;</code>
+    </div>
+  </div>
+
+  <!-- INFO COLUMN -->
+  <div class="info-col">
+
+    <div class="info-card">
+      <h2>What you get</h2>
+      <ul class="feature-list">
+        <li><div class="check">✓</div>Fully branded with your logo and colors</li>
+        <li><div class="check">✓</div>Works on any website — Wix, WordPress, Squarespace, GoDaddy</li>
+        <li><div class="check">✓</div>Adjusts pricing by ZIP code automatically</li>
+        <li><div class="check">✓</div>Captures homeowner name, email, and phone</li>
+        <li><div class="check">✓</div>Instant lead notification to your email</li>
+        <li><div class="check">✓</div>Supports multiple roof sizes and pitch calculations</li>
+        <li><div class="check">✓</div>Unlimited estimates — no monthly fees</li>
+        <li><div class="check">✓</div>Setup call included — live on your site in 5 minutes</li>
+      </ul>
+    </div>
+
+    <div id="buy" class="price-card">
+      <div class="pc-label">RoofIQ — Build &amp; Own</div>
+      <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:6px;">
+        <div class="pc-price">$497</div>
+        <div style="font-size:22px;color:rgba(255,255,255,.45);text-decoration:line-through;font-family:'Barlow Condensed',sans-serif;font-weight:700;">$595</div>
+      </div>
+      <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(245,158,11,.2);border:1px solid rgba(245,158,11,.4);border-radius:6px;padding:5px 12px;margin-bottom:14px;">
+        <span style="font-size:11px;font-weight:700;color:#fbbf24;text-transform:uppercase;letter-spacing:.5px;">Launch offer ends in</span>
+        <span id="countdown" style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;color:#fbbf24;">23:59:59</span>
+      </div>
+      <div class="pc-sub">Pay once. Use forever. No subscriptions, no per-lead fees. Includes setup call and full branding customization.</div>
+      <a href="mailto:growth@ardeablue.io?subject=I'm interested in RoofIQ&body=Hi, I tried the RoofIQ estimator and I'm interested in adding it to my website.%0D%0A%0D%0AMy company name is: %0D%0AMy website is: %0D%0AMy phone number is: %0D%0AThe best time to reach me is: " class="pc-btn">Get RoofIQ — $497 today</a>
+      <div class="pc-note">$595 one-time, yours forever · Save $98 today · Setup same day</div>
+    </div>
+
+    <div class="testimonial">
+      <div class="quote">"We put this on our site last week. Already had 4 people fill out their info — that's 4 leads we wouldn't have had. One of them is turning into a $14,000 job."</div>
+      <div class="author">Mike R.</div>
+      <div class="role">Owner, Ridgeline Roofing — Phoenix, AZ</div>
+    </div>
+
+  </div>
+
+</div>
+
+<footer>
+  <p>Questions? Email <a href="mailto:growth@ardeablue.io" style="color:rgba(255,255,255,.55)">growth@ardeablue.io</a></p>
+</footer>
+
+<script>
+(function() {
+  var KEY = 'roofiq_countdown';
+  var stored = localStorage.getItem(KEY);
+  var end;
+  if (stored) {
+    end = parseInt(stored);
+  } else {
+    end = Date.now() + 24 * 60 * 60 * 1000;
+    localStorage.setItem(KEY, end);
+  }
+  function tick() {
+    var el = document.getElementById('countdown');
+    if (!el) return;
+    var diff = Math.max(0, end - Date.now());
+    var h = Math.floor(diff / 3600000);
+    var m = Math.floor((diff % 3600000) / 60000);
+    var s = Math.floor((diff % 60000) / 1000);
+    el.textContent =
+      String(h).padStart(2,'0') + ':' +
+      String(m).padStart(2,'0') + ':' +
+      String(s).padStart(2,'0');
+    if (diff === 0) {
+      el.textContent = 'EXPIRED';
+    }
+  }
+  tick();
+  setInterval(tick, 1000);
+})();
+</script>
+</body>
+</html>
