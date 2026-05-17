@@ -4,7 +4,9 @@
   "routes": [
     { "src": "/api/(.*)", "dest": "/api/$1" },
     { "src": "/dashboard", "dest": "/dashboard/index.html" },
+    { "src": "/admin",     "dest": "/admin/index.html" },
+    { "src": "/welcome",   "dest": "/public/welcome.html" },
     { "src": "/widget.js", "dest": "/public/widget.js" },
-    { "src": "/(.*)", "dest": "/$1" }
+    { "src": "/(.*)",      "dest": "/$1" }
   ]
 }

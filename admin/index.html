@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RoofIQ Admin</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@600;700&family=DM+Sans:wght@400;500;600;700&display=swap');
+:root{--orange:#c84b11;--navy:#1b2b4b;--green:#276749;--green-l:#ebf5ee;--muted:#718096;--border:#e2e8f0;--bg:#f7f6f3;--white:#fff;--ff:'DM Sans',sans-serif;--fh:'Zilla Slab',serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--ff);background:var(--bg);color:var(--navy);min-height:100vh;-webkit-font-smoothing:antialiased}
+nav{background:var(--navy);height:56px;padding:0 24px;display:flex;align-items:center;justify-content:space-between}
+.brand{font-family:var(--fh);font-size:18px;color:#fff}.brand span{color:#f4793a}
+.nav-tag{font-size:11px;font-weight:700;background:rgba(200,75,17,.3);color:#f4793a;padding:3px 10px;border-radius:4px;text-transform:uppercase;letter-spacing:.5px}
+.main{max-width:1100px;margin:0 auto;padding:28px 20px}
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.login-card{background:var(--white);border:1.5px solid var(--border);border-radius:16px;padding:36px 32px;width:100%;max-width:380px}
+.login-card h2{font-family:var(--fh);font-size:24px;margin-bottom:6px}
+.login-card p{font-size:14px;color:var(--muted);margin-bottom:22px}
+.lf{margin-bottom:14px}
+.lf label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:6px}
+.lf input{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-family:var(--ff);font-size:15px;color:var(--navy);outline:none}
+.lf input:focus{border-color:var(--orange)}
+.btn{width:100%;padding:13px;background:var(--orange);color:#fff;border:none;border-radius:10px;font-family:var(--ff);font-size:15px;font-weight:700;cursor:pointer}
+.err{font-size:13px;color:#9b2c1a;background:#fef2f0;border:1px solid #fcd5cc;border-radius:8px;padding:9px 12px;margin-bottom:12px}
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px}
+.sc{background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:18px 20px}
+.sv{font-family:var(--fh);font-size:28px;font-weight:700;color:var(--navy);line-height:1}
+.sv.green{color:var(--green)}.sv.orange{color:var(--orange)}
+.sl{font-size:12px;color:var(--muted);margin-top:5px}
+/* Revenue breakdown */
+.rev-bar{background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:28px;display:flex;gap:32px;flex-wrap:wrap}
+.rev-item{text-align:center}
+.rev-val{font-family:var(--fh);font-size:22px;font-weight:700;color:var(--navy)}
+.rev-lbl{font-size:11px;color:var(--muted);margin-top:3px}
+/* Table */
+.table-wrap{background:var(--white);border:1.5px solid var(--border);border-radius:14px;overflow:hidden}
+.table-hdr{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border)}
+.table-hdr h2{font-family:var(--fh);font-size:19px}
+.search-inp{padding:8px 14px;border:1.5px solid var(--border);border-radius:8px;font-family:var(--ff);font-size:14px;color:var(--navy);outline:none;width:220px}
+.search-inp:focus{border-color:var(--orange)}
+.row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr 80px;gap:12px;padding:13px 20px;border-bottom:1px solid var(--border);align-items:center;font-size:13.5px}
+.row:last-child{border-bottom:none}
+.row:hover{background:var(--bg)}
+.row-hdr{background:var(--bg);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);padding:10px 20px}
+.co-name{font-weight:700;color:var(--navy)}
+.co-email{font-size:11.5px;color:var(--muted)}
+.plan-badge{display:inline-block;padding:3px 9px;border-radius:4px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.3px}
+.plan-badge.starter{background:#f7f6f3;color:var(--muted)}
+.plan-badge.essentials{background:var(--navy);color:#fff;background:#e8ecf3;color:var(--navy)}
+.plan-badge.growth{background:#fef0e8;color:var(--orange)}
+.plan-badge.pro{background:var(--navy);color:#fff}
+.action-btn{padding:6px 12px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;border:none;background:var(--bg);color:var(--navy);transition:background .15s}
+.action-btn:hover{background:var(--border)}
+.empty{text-align:center;padding:48px;color:var(--muted);font-size:14px}
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:100;padding:20px}
+.modal{background:var(--white);border-radius:16px;padding:28px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto}
+.modal h3{font-family:var(--fh);font-size:20px;margin-bottom:18px}
+.modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.mf label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);display:block;margin-bottom:5px}
+.mf input,.mf select{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:var(--ff);font-size:14px;color:var(--navy);outline:none}
+.mf input:focus,.mf select:focus{border-color:var(--orange)}
+.modal-actions{display:flex;gap:10px;margin-top:18px}
+.btn-save{flex:1;padding:12px;background:var(--orange);color:#fff;border:none;border-radius:8px;font-family:var(--ff);font-size:14px;font-weight:700;cursor:pointer}
+.btn-cancel{padding:12px 20px;background:var(--bg);color:var(--navy);border:1.5px solid var(--border);border-radius:8px;font-family:var(--ff);font-size:14px;font-weight:700;cursor:pointer}
+.api-key-box{background:var(--bg);border-radius:8px;padding:10px 13px;font-family:monospace;font-size:12px;color:var(--navy);word-break:break-all;margin-bottom:14px;border:1px solid var(--border)}
+@media(max-width:800px){.stats{grid-template-columns:1fr 1fr}.row{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+const ADMIN_PASS = 'roofiq-admin-2026'; // change this after first login
+const API_BASE   = '';
+
+let authed = sessionStorage.getItem('riq_admin') === 'true';
+let data   = null;
+let search = '';
+let modal  = null; // { mode: 'add'|'edit', company: {} }
+
+const app = document.getElementById('app');
+
+function render() {
+  if (!authed) { app.innerHTML = loginHTML(); bindLogin(); return; }
+  if (!data)   { loadData(); app.innerHTML = navHTML() + `<div class="main"><div class="empty">Loading…</div></div>`; return; }
+  app.innerHTML = navHTML() + mainHTML();
+  bindMain();
+}
+
+function navHTML() {
+  return `<nav><div class="brand">Roof<span>IQ</span></div><div style="display:flex;align-items:center;gap:12px"><span class="nav-tag">Admin</span><span style="font-size:13px;color:rgba(255,255,255,.4);cursor:pointer" onclick="logout()">Sign out</span></div></nav>`;
+}
+
+function loginHTML() {
+  return `<div class="login-wrap"><div class="login-card">
+    <h2>Admin Access</h2><p>RoofIQ owner dashboard</p>
+    <div id="lerr"></div>
+    <div class="lf"><label>Password</label><input type="password" id="lpass" placeholder="Enter admin password"></div>
+    <button class="btn" onclick="doLogin()">Enter Dashboard →</button>
+  </div></div>`;
+}
+
+function mainHTML() {
+  const companies = filteredCompanies();
+  const stats     = calcStats();
+
+  const revenueMonthly = companies.filter(c=>['growth','pro'].includes(c.plan))
+    .reduce((s,c)=>s+(c.plan==='growth'?79:149),0);
+  const revenueOneTime = companies.filter(c=>c.plan!=='starter').length * 297;
+
+  return `<div class="main">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+      <h1 style="font-family:var(--fh);font-size:24px;">Client Overview</h1>
+      <button onclick="openAdd()" style="background:var(--orange);color:#fff;border:none;padding:10px 20px;border-radius:8px;font-family:var(--ff);font-size:14px;font-weight:700;cursor:pointer;">+ Add Client</button>
+    </div>
+
+    <div class="stats">
+      <div class="sc"><div class="sv green">${stats.total}</div><div class="sl">Total clients</div></div>
+      <div class="sc"><div class="sv orange">${stats.paid}</div><div class="sl">Paying clients</div></div>
+      <div class="sc"><div class="sv">$${revenueMonthly.toLocaleString()}</div><div class="sl">Monthly recurring revenue</div></div>
+      <div class="sc"><div class="sv">$${revenueOneTime.toLocaleString()}</div><div class="sl">One-time revenue collected</div></div>
+    </div>
+
+    <div class="rev-bar">
+      <div class="rev-item"><div class="rev-val">${stats.byPlan.starter}</div><div class="rev-lbl">Starter (trial)</div></div>
+      <div class="rev-item"><div class="rev-val">${stats.byPlan.essentials}</div><div class="rev-lbl">Essentials · $297</div></div>
+      <div class="rev-item"><div class="rev-val">${stats.byPlan.growth}</div><div class="rev-lbl">Growth · $79/mo</div></div>
+      <div class="rev-item"><div class="rev-val">${stats.byPlan.pro}</div><div class="rev-lbl">Pro · $149/mo</div></div>
+    </div>
+
+    <div class="table-wrap">
+      <div class="table-hdr">
+        <h2>All Clients (${companies.length})</h2>
+        <input class="search-inp" placeholder="Search by name or email…" value="${search}" oninput="setSearch(this.value)">
+      </div>
+      <div class="row row-hdr">
+        <div>Company</div><div>Plan</div><div>Leads</div><div>Joined</div><div>API Key</div><div></div>
+      </div>
+      ${companies.length ? companies.map(rowHTML).join('') : '<div class="empty">No clients yet.</div>'}
+    </div>
+  </div>
+  ${modal ? modalHTML() : ''}`;
+}
+
+function rowHTML(c) {
+  const date   = new Date(c.created_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'2-digit'});
+  const keyStr = c.api_key ? c.api_key.slice(0,12)+'…' : '—';
+  return `<div class="row">
+    <div><div class="co-name">${c.company_name}</div><div class="co-email">${c.email}</div></div>
+    <div><span class="plan-badge ${c.plan}">${c.plan}</span></div>
+    <div>${c.lead_count||0} leads</div>
+    <div>${date}</div>
+    <div style="font-family:monospace;font-size:11px;color:var(--muted)">${keyStr}</div>
+    <div><button class="action-btn" onclick="openEdit(${JSON.stringify(c).replace(/"/g,'&quot;')})">Edit</button></div>
+  </div>`;
+}
+
+function modalHTML() {
+  const c    = modal.company || {};
+  const isEdit = modal.mode === 'edit';
+  return `<div class="modal-overlay" onclick="if(event.target===this)closeModal()">
+    <div class="modal">
+      <h3>${isEdit ? 'Edit Client' : 'Add New Client'}</h3>
+      ${isEdit && c.api_key ? `<div style="margin-bottom:14px"><label style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);display:block;margin-bottom:5px">API Key (send to client)</label><div class="api-key-box">${c.api_key}</div></div>` : ''}
+      <div class="modal-grid">
+        <div class="mf"><label>Company name</label><input id="m-company" value="${c.company_name||''}"></div>
+        <div class="mf"><label>Contact name</label><input id="m-name" value="${c.contact_name||''}"></div>
+        <div class="mf"><label>Email</label><input id="m-email" value="${c.email||''}"></div>
+        <div class="mf"><label>Phone</label><input id="m-phone" value="${c.phone||''}"></div>
+        <div class="mf"><label>Plan</label>
+          <select id="m-plan">
+            ${['starter','essentials','growth','pro'].map(p=>`<option value="${p}"${c.plan===p?' selected':''}>${p}</option>`).join('')}
+          </select>
+        </div>
+        <div class="mf"><label>Brand color</label><input id="m-color" value="${c.primary_color||'#c84b11'}"></div>
+        <div class="mf" style="grid-column:1/-1"><label>Logo URL</label><input id="m-logo" value="${c.logo_url||''}"></div>
+        <div class="mf" style="grid-column:1/-1"><label>Tagline</label><input id="m-tagline" value="${c.tagline||'Free Instant Roof Estimate'}"></div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+        <button class="btn-save" onclick="saveClient('${c.id||''}')">${isEdit?'Save Changes':'Create Client & Send Welcome Email'}</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ── Data ── */
+async function loadData() {
+  try {
+    const res = await fetch(`${API_BASE}/api/admin?pass=${encodeURIComponent(ADMIN_PASS)}`);
+    data = await res.json();
+    render();
+  } catch(e) { data = { companies:[] }; render(); }
+}
+
+function filteredCompanies() {
+  const list = data?.companies || [];
+  if (!search) return list;
+  const q = search.toLowerCase();
+  return list.filter(c =>
+    c.company_name?.toLowerCase().includes(q) ||
+    c.email?.toLowerCase().includes(q)
+  );
+}
+
+function calcStats() {
+  const list = data?.companies || [];
+  return {
+    total: list.length,
+    paid:  list.filter(c=>c.plan!=='starter').length,
+    byPlan: {
+      starter:    list.filter(c=>c.plan==='starter').length,
+      essentials: list.filter(c=>c.plan==='essentials').length,
+      growth:     list.filter(c=>c.plan==='growth').length,
+      pro:        list.filter(c=>c.plan==='pro').length,
+    }
+  };
+}
+
+/* ── Actions ── */
+function doLogin() {
+  const p = document.getElementById('lpass')?.value;
+  if (p === ADMIN_PASS) {
+    authed = true;
+    sessionStorage.setItem('riq_admin','true');
+    render();
+  } else {
+    document.getElementById('lerr').innerHTML = '<div class="err">Incorrect password.</div>';
+  }
+}
+
+function logout() { authed=false; sessionStorage.removeItem('riq_admin'); render(); }
+function setSearch(v) { search=v; render(); }
+function openAdd()  { modal={ mode:'add', company:{} }; render(); bindMain(); }
+function openEdit(c){ modal={ mode:'edit', company:c }; render(); bindMain(); }
+function closeModal(){ modal=null; render(); }
+
+async function saveClient(id) {
+  const body = {
+    company_name:  document.getElementById('m-company').value,
+    email:         document.getElementById('m-email').value,
+    phone:         document.getElementById('m-phone').value,
+    plan:          document.getElementById('m-plan').value,
+    primary_color: document.getElementById('m-color').value,
+    logo_url:      document.getElementById('m-logo').value,
+    tagline:       document.getElementById('m-tagline').value,
+  };
+
+  try {
+    const url = id
+      ? `${API_BASE}/api/admin?pass=${encodeURIComponent(ADMIN_PASS)}&id=${id}`
+      : `${API_BASE}/api/admin?pass=${encodeURIComponent(ADMIN_PASS)}`;
+    const res = await fetch(url, {
+      method: id ? 'PATCH' : 'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(body),
+    });
+    const result = await res.json();
+    if (result.ok) { modal=null; data=null; render(); }
+    else alert('Error: ' + (result.error||'Unknown'));
+  } catch(e) { alert('Network error'); }
+}
+
+/* ── Bind ── */
+function bindLogin() {
+  const i = document.getElementById('lpass');
+  if(i) i.addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+}
+function bindMain() {}
+
+render();
+</script>
+</body>
+</html>

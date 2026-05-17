@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welcome to RoofIQ</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@600;700&family=DM+Sans:wght@400;500;600;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:#f7f6f3;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.card{background:#fff;border-radius:20px;overflow:hidden;max-width:520px;width:100%;box-shadow:0 8px 40px rgba(0,0,0,.1)}
+.card-hdr{background:#c84b11;padding:28px 32px}
+.card-hdr h1{font-family:'Zilla Slab',serif;font-size:26px;color:#fff;margin-bottom:4px}
+.card-hdr p{font-size:14px;color:rgba(255,255,255,.7)}
+.card-body{padding:28px 32px}
+.step{display:flex;align-items:flex-start;gap:14px;padding:14px 0;border-bottom:1px solid #f0f1f4}
+.step:last-child{border-bottom:none}
+.step-num{width:28px;height:28px;border-radius:50%;background:#c84b11;color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;margin-top:1px}
+.step strong{font-size:14px;font-weight:700;color:#1b2b4b;display:block;margin-bottom:3px}
+.step span{font-size:13px;color:#718096;line-height:1.5}
+.embed-box{background:#f7f6f3;border-radius:10px;padding:13px;font-family:monospace;font-size:12px;color:#c84b11;word-break:break-all;margin-top:8px;border:1px solid #e2e8f0}
+.cta{display:block;width:100%;padding:14px;background:#1b2b4b;color:#fff;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;text-align:center;text-decoration:none;margin-top:22px;cursor:pointer}
+.loading{text-align:center;padding:48px;color:#718096}
+.spinner{width:32px;height:32px;border:3px solid #e2e8f0;border-top-color:#c84b11;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 16px}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="card" id="card">
+  <div style="background:#fff;padding:48px;text-align:center">
+    <div class="spinner"></div>
+    <p style="color:#718096;font-size:14px">Setting up your account…</p>
+  </div>
+</div>
+
+<script>
+const domain = window.location.origin;
+const params = new URLSearchParams(window.location.search);
+const sessionId = params.get('session_id');
+const plan = params.get('plan') || 'essentials';
+
+// The stripe-webhook already created the account.
+// This page just shows confirmation and next steps.
+document.getElementById('card').innerHTML = `
+  <div class="card-hdr">
+    <h1>You're all set! 🎉</h1>
+    <p>Check your email — your API key and setup instructions are on their way.</p>
+  </div>
+  <div class="card-body">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div>
+        <strong>Check your email</strong>
+        <span>Your embed code and dashboard login are in your inbox. Check spam if you don't see it within 2 minutes.</span>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div>
+        <strong>Paste the widget on your site</strong>
+        <span>Add one line of code before &lt;/body&gt; on any page. Works on Wix, WordPress, Squarespace, GoDaddy — anything.</span>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div>
+        <strong>Open your leads dashboard</strong>
+        <span>Every estimate and lead shows up here in real time.</span>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">💬</div>
+      <div>
+        <strong>Need help? Reply to your welcome email</strong>
+        <span>We'll set everything up on a quick call — included with your plan.</span>
+      </div>
+    </div>
+    <a href="${domain}/dashboard" class="cta">Open My Dashboard →</a>
+  </div>`;
+</script>
+</body>
+</html>
