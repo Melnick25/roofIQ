@@ -132,8 +132,10 @@ async function sendEmail({ to, subject, html }) {
 }
 
 function welcomeEmail(company, name, website) {
-  const domain = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://roofiq.live';
-  const embedCode = `&lt;script src="${domain}/widget.js" data-key="${company.api_key}"&gt;&lt;/script&gt;`;
+  const domain     = 'https://roofiq.live';
+  const embedCode  = `&lt;script src="${domain}/widget.js" data-key="${company.api_key}"&gt;&lt;/script&gt;`;
+  const trialTs    = new Date(company.trial_started || Date.now()).getTime();
+  const upgradeUrl = `${domain}/#pricing?key=${encodeURIComponent(company.api_key)}&ts=${trialTs}`;
   return `
   <div style="font-family:sans-serif;max-width:600px;margin:0 auto;">
     <div style="background:#1b2b4b;padding:24px;border-radius:12px 12px 0 0;">
@@ -141,6 +143,10 @@ function welcomeEmail(company, name, website) {
     </div>
     <div style="background:#fff;padding:28px;border:1px solid #e2e8f0;border-radius:0 0 12px 12px;">
       <p style="color:#4a5568;font-size:15px;">Your free trial is active — 25 estimates, 14 days. Here's how to get your estimator live in the next 5 minutes.</p>
+
+      <div style="background:#fef0e8;border:1.5px solid #f4a87c;border-radius:10px;padding:14px 16px;margin-bottom:20px;">
+        <p style="color:#a03a0a;font-size:14px;margin:0;"><strong>⏱ Early-bird offer:</strong> Upgrade within 5 days and save up to $700 on your setup fee. <a href="${upgradeUrl}" style="color:#c84b11;font-weight:700;">View your discounted pricing →</a></p>
+      </div>
 
       <h3 style="color:#1b2b4b;margin-top:24px;">Step 1 — Paste this code on your website</h3>
       <p style="color:#4a5568;font-size:14px;">Add this before the &lt;/body&gt; tag on any page:</p>

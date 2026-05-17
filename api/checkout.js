@@ -1,5 +1,5 @@
 // api/checkout.js — POST /api/checkout
-// Creates a Stripe checkout session for the selected plan
+// Creates Stripe checkout session — early bird or full pricing based on is_early flag
 
 const CORS = {
   'Access-Control-Allow-Origin':  '*',
@@ -7,56 +7,73 @@ const CORS = {
   'Access-Control-Allow-Headers': 'Content-Type',
 };
 
-// Plan → Stripe price config
-// Replace price IDs with your actual Stripe Price IDs after setup
-const PLANS = {
-  essentials: {
-    name:      'RoofIQ Essentials',
-    mode:      'payment',                          // one-time
-    price:     29700,                              // $297 in cents
-    currency:  'usd',
-  },
-  growth: {
-    name:      'RoofIQ Growth',
-    mode:      'subscription',
-    setup_fee: 29700,                              // $297 one-time setup
-    price_id:  process.env.STRIPE_PRICE_GROWTH,   // $79/mo recurring price ID
-  },
-  pro: {
-    name:      'RoofIQ Pro',
-    mode:      'subscription',
-    setup_fee: 29700,
-    price_id:  process.env.STRIPE_PRICE_PRO,      // $149/mo recurring price ID
-  },
-};
-
 export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).setHeaders(CORS).end();
   Object.entries(CORS).forEach(([k,v]) => res.setHeader(k, v));
   if (req.method !== 'POST') return res.status(405).end();
 
-  const { plan, name, company, email, website } = req.body;
-  const planConfig = PLANS[plan];
+  const { plan, email, company, name, website, is_early } = req.body;
+  if (!plan || !email) return res.status(400).json({ error: 'Plan and email required' });
 
-  if (!planConfig) return res.status(400).json({ error: 'Invalid plan' });
-  if (!email)      return res.status(400).json({ error: 'Email required' });
+  const domain = 'https://roofiq.live';
+  const early  = !!is_early;
 
-  const domain = process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
-    : 'https://roofiq.live';
+  // Price ID map from Stripe
+  const PRICE_IDS = {
+    essentials: {
+      setup: early
+        ? process.env.STRIPE_PRICE_ESSENTIALS_EARLY   // $297
+        : process.env.STRIPE_PRICE_ESSENTIALS_FULL,   // $497
+      monthly: null,  // no recurring for essentials
+    },
+    growth: {
+      setup: early
+        ? process.env.STRIPE_PRICE_GROWTH_EARLY       // $297
+        : process.env.STRIPE_PRICE_GROWTH_FULL,       // $697
+      monthly: process.env.STRIPE_PRICE_GROWTH_MONTHLY, // $79/mo
+    },
+    pro: {
+      setup: early
+        ? process.env.STRIPE_PRICE_PRO_EARLY          // $297
+        : process.env.STRIPE_PRICE_PRO_FULL,          // $997
+      monthly: process.env.STRIPE_PRICE_PRO_MONTHLY,    // $149/mo
+    },
+  };
+
+  const prices = PRICE_IDS[plan];
+  if (!prices) return res.status(400).json({ error: 'Invalid plan' });
 
   try {
     let sessionUrl;
 
-    if (planConfig.mode === 'payment') {
-      // One-time payment (Essentials)
-      sessionUrl = await createPaymentSession({
-        plan, name, company, email, website, planConfig, domain
+    if (!prices.monthly) {
+      // Essentials — one-time payment only
+      sessionUrl = await createSession({
+        mode:         'payment',
+        email,
+        success_url:  `${domain}/welcome?plan=${plan}`,
+        cancel_url:   `${domain}/#pricing`,
+        line_items:   [{ price: prices.setup, quantity: 1 }],
+        metadata:     { plan, email, company: company||'', name: name||'', website: website||'', is_early: early ? '1' : '0' },
       });
     } else {
-      // Subscription with setup fee (Growth, Pro)
-      sessionUrl = await createSubscriptionSession({
-        plan, name, company, email, website, planConfig, domain
+      // Growth / Pro — setup fee (one-time) + monthly subscription
+      // We use subscription mode and add the setup fee as a one-time add-on
+      sessionUrl = await createSession({
+        mode:         'subscription',
+        email,
+        success_url:  `${domain}/welcome?plan=${plan}`,
+        cancel_url:   `${domain}/#pricing`,
+        line_items:   [
+          { price: prices.monthly, quantity: 1 },          // recurring
+        ],
+        subscription_data: {
+          add_invoice_items: [
+            { price: prices.setup, quantity: 1 }           // one-time setup fee on first invoice
+          ],
+          metadata: { plan, is_early: early ? '1' : '0' },
+        },
+        metadata: { plan, email, company: company||'', name: name||'', website: website||'', is_early: early ? '1' : '0' },
       });
     }
 
@@ -64,85 +81,57 @@ export default async function handler(req, res) {
 
   } catch (err) {
     console.error('[checkout]', err);
-    return res.status(500).json({ error: 'Could not create checkout session' });
+    return res.status(500).json({ error: err.message || 'Checkout failed' });
   }
 }
 
-async function stripeRequest(path, body) {
-  const res = await fetch(`https://api.stripe.com/v1/${path}`, {
-    method: 'POST',
+async function createSession(params) {
+  const body = {};
+
+  body.mode           = params.mode;
+  body.customer_email = params.email;
+  body.success_url    = params.success_url;
+  body.cancel_url     = params.cancel_url;
+
+  // Line items
+  params.line_items.forEach((item, i) => {
+    body[`line_items[${i}][price]`]    = item.price;
+    body[`line_items[${i}][quantity]`] = item.quantity;
+  });
+
+  // Metadata
+  if (params.metadata) {
+    Object.entries(params.metadata).forEach(([k,v]) => {
+      body[`metadata[${k}]`] = v;
+    });
+  }
+
+  // Subscription data (Growth/Pro)
+  if (params.subscription_data) {
+    const sd = params.subscription_data;
+    if (sd.add_invoice_items) {
+      sd.add_invoice_items.forEach((item, i) => {
+        body[`subscription_data[add_invoice_items][${i}][price]`]    = item.price;
+        body[`subscription_data[add_invoice_items][${i}][quantity]`] = item.quantity;
+      });
+    }
+    if (sd.metadata) {
+      Object.entries(sd.metadata).forEach(([k,v]) => {
+        body[`subscription_data[metadata][${k}]`] = v;
+      });
+    }
+  }
+
+  const res = await fetch('https://api.stripe.com/v1/checkout/sessions', {
+    method:  'POST',
     headers: {
       Authorization:  `Bearer ${process.env.STRIPE_SECRET_KEY}`,
       'Content-Type': 'application/x-www-form-urlencoded',
     },
-    body: new URLSearchParams(flattenStripeParams(body)).toString(),
+    body: new URLSearchParams(body).toString(),
   });
+
   const data = await res.json();
   if (data.error) throw new Error(data.error.message);
-  return data;
-}
-
-// Stripe requires nested params as bracket notation
-function flattenStripeParams(obj, prefix = '') {
-  return Object.entries(obj).reduce((acc, [key, val]) => {
-    const fullKey = prefix ? `${prefix}[${key}]` : key;
-    if (val !== null && val !== undefined) {
-      if (typeof val === 'object' && !Array.isArray(val)) {
-        Object.assign(acc, flattenStripeParams(val, fullKey));
-      } else {
-        acc[fullKey] = val;
-      }
-    }
-    return acc;
-  }, {});
-}
-
-async function createPaymentSession({ plan, name, company, email, website, planConfig, domain }) {
-  const session = await stripeRequest('checkout/sessions', {
-    mode:                 'payment',
-    customer_email:       email,
-    success_url:          `${domain}/welcome?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url:           `${domain}/#pricing`,
-    'line_items[0][price_data][currency]':     'usd',
-    'line_items[0][price_data][product_data][name]': planConfig.name,
-    'line_items[0][price_data][product_data][description]': 'One-time setup · No monthly fee',
-    'line_items[0][price_data][unit_amount]':  planConfig.price,
-    'line_items[0][quantity]':                 1,
-    'metadata[plan]':    plan,
-    'metadata[name]':    name || '',
-    'metadata[company]': company || '',
-    'metadata[email]':   email,
-    'metadata[website]': website || '',
-  });
-  return session.url;
-}
-
-async function createSubscriptionSession({ plan, name, company, email, website, planConfig, domain }) {
-  const items = [{ price: planConfig.price_id, quantity: 1 }];
-
-  const sessionParams = {
-    mode:           'subscription',
-    customer_email: email,
-    success_url:    `${domain}/welcome?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url:     `${domain}/#pricing`,
-    'metadata[plan]':    plan,
-    'metadata[name]':    name || '',
-    'metadata[company]': company || '',
-    'metadata[email]':   email,
-    'metadata[website]': website || '',
-  };
-
-  // Add subscription items
-  items.forEach((item, i) => {
-    sessionParams[`line_items[${i}][price]`]    = item.price;
-    sessionParams[`line_items[${i}][quantity]`] = item.quantity;
-  });
-
-  // Add setup fee as invoice item if needed
-  if (planConfig.setup_fee) {
-    sessionParams['subscription_data[trial_period_days]'] = 0;
-  }
-
-  const session = await stripeRequest('checkout/sessions', sessionParams);
-  return session.url;
+  return data.url;
 }

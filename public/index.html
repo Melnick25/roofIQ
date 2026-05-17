@@ -894,8 +894,17 @@ footer a { color: rgba(255,255,255,.45); text-decoration: none; }
   <div class="pricing-inner">
     <div class="pricing-hd">
       <span class="eyebrow">Simple, transparent pricing</span>
-      <h2 class="section-h">Start free. Upgrade when it pays for itself.</h2>
-      <p class="section-p">One closed job covers the cost of RoofIQ for years. Every tier is built to prove its value before asking for more.</p>
+      <h2 class="section-h" id="pricing-headline">Start free. Upgrade when it pays for itself.</h2>
+      <p class="section-p" id="pricing-sub">One closed job covers the cost of RoofIQ for years. Every tier is built to prove its value before asking for more.</p>
+    </div>
+
+    <!-- Early-bird countdown banner — shown only to trial users -->
+    <div id="early-banner" style="display:none;background:#1b2b4b;border-radius:14px;padding:18px 24px;margin-bottom:32px;display:none;align-items:center;gap:20px;flex-wrap:wrap;">
+      <div style="flex:1;">
+        <div style="font-family:var(--ff-head);font-size:18px;font-weight:700;color:#fff;margin-bottom:4px;">⏱ Your early-bird discount expires in</div>
+        <div style="font-size:13px;color:rgba(255,255,255,.55);">Upgrade before your trial discount ends — prices go up after this window closes.</div>
+      </div>
+      <div id="countdown-display" style="font-family:var(--ff-head);font-size:42px;font-weight:700;color:var(--orange-m);letter-spacing:2px;flex-shrink:0;">5:00:00:00</div>
     </div>
 
     <div class="tiers">
@@ -929,7 +938,7 @@ footer a { color: rgba(255,255,255,.45); text-decoration: none; }
                 <strong>No card, no commitment.</strong>
                 Paste one line of code and the estimator is live on your site. See it work in the real world before making any decision.
               </div>
-              <a href="mailto:growth@ardeablue.io?subject=RoofIQ Starter Trial" class="tier-btn free-btn">Get the Free Trial</a>
+              <button onclick="openSignup('starter')" class="tier-btn free-btn">Get the Free Trial</button>
             </div>
           </div>
         </div>
@@ -943,8 +952,10 @@ footer a { color: rgba(255,255,255,.45); text-decoration: none; }
             <div class="tier-tagline">Your brand. Your leads. No monthly fee.</div>
           </div>
           <div class="tier-hdr-right">
-            <div class="tier-price">$297</div>
-            <div class="tier-price-sub">one-time · no monthly fee</div>
+            <div id="ess-price-display">
+              <div class="tier-price">$497</div>
+              <div class="tier-price-sub">one-time · no monthly fee</div>
+            </div>
           </div>
           <div class="tier-chevron">▼</div>
         </div>
@@ -967,7 +978,7 @@ footer a { color: rgba(255,255,255,.45); text-decoration: none; }
                 <strong>Pay once. Yours forever.</strong>
                 One lead that converts covers this cost many times over. No subscription, no risk — and we'll set it up with you on a call.
               </div>
-              <a href="mailto:growth@ardeablue.io?subject=RoofIQ Essentials" class="tier-btn primary-btn">Get Essentials — $297</a>
+              <button id="ess-btn" onclick="handleUpgrade('essentials')" class="tier-btn primary-btn">Get Essentials — $497</button>
             </div>
           </div>
         </div>
@@ -984,8 +995,10 @@ footer a { color: rgba(255,255,255,.45); text-decoration: none; }
             <div class="tier-tagline">SMS alerts, booking, and lead scoring. The closer.</div>
           </div>
           <div class="tier-hdr-right">
-            <div class="tier-price">$297</div>
-            <div class="tier-price-sub">one-time + $79/mo · cancel anytime</div>
+            <div id="growth-price-display">
+              <div class="tier-price">$697</div>
+              <div class="tier-price-sub">setup + $79/mo · cancel anytime</div>
+            </div>
           </div>
           <div class="tier-chevron">▼</div>
         </div>
@@ -1007,9 +1020,9 @@ footer a { color: rgba(255,255,255,.45); text-decoration: none; }
             <div class="tier-cta-wrap">
               <div class="tier-cta-desc">
                 <strong>This is where it pays for itself.</strong>
-                SMS alerts mean you call leads within minutes, not hours. Booking means they lock in an inspection before they shop around. The dashboard shows you what's working.
+                SMS alerts mean you call leads within minutes, not hours. Booking means they lock in an inspection before they shop around.
               </div>
-              <a href="mailto:growth@ardeablue.io?subject=RoofIQ Growth" class="tier-btn orange-btn">Get Growth — $297 + $79/mo</a>
+              <button id="growth-btn" onclick="handleUpgrade('growth')" class="tier-btn orange-btn">Get Growth — $697 + $79/mo</button>
             </div>
           </div>
         </div>
@@ -1023,8 +1036,10 @@ footer a { color: rgba(255,255,255,.45); text-decoration: none; }
             <div class="tier-tagline">AI follow-up, storm intelligence, and multi-location.</div>
           </div>
           <div class="tier-hdr-right">
-            <div class="tier-price">$297</div>
-            <div class="tier-price-sub">one-time + $149/mo · cancel anytime</div>
+            <div id="pro-price-display">
+              <div class="tier-price">$997</div>
+              <div class="tier-price-sub">setup + $149/mo · cancel anytime</div>
+            </div>
           </div>
           <div class="tier-chevron">▼</div>
         </div>
@@ -1042,15 +1057,23 @@ footer a { color: rgba(255,255,255,.45); text-decoration: none; }
             <div class="tier-cta-wrap">
               <div class="tier-cta-desc">
                 <strong>Built for contractors who run a real operation.</strong>
-                Storm intelligence alone can surface insurance-eligible leads before your competitors even know the storm happened. In a busy storm season, Pro can pay for itself many times over.
+                Storm intelligence surfaces insurance-eligible leads before your competitors even know the storm happened.
               </div>
-              <a href="mailto:growth@ardeablue.io?subject=RoofIQ Pro" class="tier-btn primary-btn">Get Pro — $297 + $149/mo</a>
+              <button id="pro-btn" onclick="handleUpgrade('pro')" class="tier-btn primary-btn">Get Pro — $997 + $149/mo</button>
             </div>
           </div>
         </div>
       </div>
 
     </div>
+  </div>
+</div>
+
+<!-- ════════ SIGNUP MODAL ════════ -->
+<div id="signup-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:#fff;border-radius:20px;padding:32px;width:100%;max-width:460px;max-height:90vh;overflow-y:auto;position:relative;">
+    <button onclick="closeSignup()" style="position:absolute;top:16px;right:18px;background:none;border:none;font-size:22px;color:#a0aec0;cursor:pointer;">×</button>
+    <div id="modal-content"></div>
   </div>
 </div>
 
@@ -1275,14 +1298,282 @@ footer a { color: rgba(255,255,255,.45); text-decoration: none; }
 </footer>
 
 <script>
+/* ══════════════════════════════════════
+   PRICING — Trial-aware logic
+   URL params: ?key=API_KEY (from welcome email link)
+   If key present + within 5 days → show early pricing + countdown
+   Otherwise → show full pricing
+══════════════════════════════════════ */
+
+const PRICES = {
+  full:  { essentials: 497, growth: 697, pro: 997 },
+  early: { essentials: 297, growth: 297, pro: 297  },
+};
+
+let trialKey      = null;
+let trialStarted  = null;
+let isEarlyBird   = false;
+let daysRemaining = 0;
+
+/* ── Read URL params ── */
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  trialKey = params.get('key');
+  const ts = params.get('ts'); // trial_started as unix ms, passed in welcome email link
+  if (ts) trialStarted = parseInt(ts);
+})();
+
+/* ── Determine early bird status ── */
+async function initPricing() {
+  if (trialKey) {
+    try {
+      // Fetch trial info from API
+      const res  = await fetch(`/api/config?key=${encodeURIComponent(trialKey)}`);
+      const data = await res.json();
+      if (data && data.plan === 'starter' && !data.trial_expired) {
+        // Calculate days since trial started
+        const started  = new Date(data.trial_started || Date.now()).getTime();
+        const daysSince = (Date.now() - started) / 86400000;
+        daysRemaining  = Math.max(0, 5 - daysSince);
+        isEarlyBird    = daysRemaining > 0;
+        trialStarted   = started;
+      }
+    } catch(e) { /* fall through to full pricing */ }
+  }
+  renderPricing();
+}
+
+function renderPricing() {
+  if (isEarlyBird) {
+    // Show personalized early-bird pricing
+    document.getElementById('pricing-headline').textContent = 'Your early-bird discount is active';
+    document.getElementById('pricing-sub').textContent = `You're in your trial window — upgrade now to save hundreds. These prices expire in ${Math.ceil(daysRemaining)} day${Math.ceil(daysRemaining)===1?'':'s'}.`;
+
+    // Show countdown banner
+    const banner = document.getElementById('early-banner');
+    banner.style.display = 'flex';
+
+    // Update price displays with strikethrough
+    document.getElementById('ess-price-display').innerHTML = `
+      <div style="display:flex;align-items:baseline;gap:8px;">
+        <div class="tier-price">$297</div>
+        <div style="font-size:16px;color:var(--muted);text-decoration:line-through;">$497</div>
+      </div>
+      <div class="tier-price-sub">one-time · no monthly fee · save $200</div>`;
+
+    document.getElementById('growth-price-display').innerHTML = `
+      <div style="display:flex;align-items:baseline;gap:8px;">
+        <div class="tier-price">$297</div>
+        <div style="font-size:16px;color:var(--muted);text-decoration:line-through;">$697</div>
+      </div>
+      <div class="tier-price-sub">setup + $79/mo · save $400</div>`;
+
+    document.getElementById('pro-price-display').innerHTML = `
+      <div style="display:flex;align-items:baseline;gap:8px;">
+        <div class="tier-price">$297</div>
+        <div style="font-size:16px;color:var(--muted);text-decoration:line-through;">$997</div>
+      </div>
+      <div class="tier-price-sub">setup + $149/mo · save $700</div>`;
+
+    // Update buttons
+    document.getElementById('ess-btn').textContent    = 'Upgrade — $297 (save $200) →';
+    document.getElementById('growth-btn').textContent = 'Upgrade — $297 + $79/mo (save $400) →';
+    document.getElementById('pro-btn').textContent    = 'Upgrade — $297 + $149/mo (save $700) →';
+
+    // Start countdown
+    startCountdown();
+  }
+  // Full pricing already shown by default in HTML
+}
+
+/* ── Countdown timer ── */
+function startCountdown() {
+  if (!trialStarted) return;
+  const expiry = trialStarted + (5 * 86400000); // 5 days from trial start
+
+  function tick() {
+    const diff = Math.max(0, expiry - Date.now());
+    const d    = Math.floor(diff / 86400000);
+    const h    = Math.floor((diff % 86400000) / 3600000);
+    const m    = Math.floor((diff % 3600000)  / 60000);
+    const s    = Math.floor((diff % 60000)    / 1000);
+    const pad  = n => String(n).padStart(2,'0');
+    const el   = document.getElementById('countdown-display');
+    if (el) el.textContent = `${d}:${pad(h)}:${pad(m)}:${pad(s)}`;
+    if (diff > 0) requestAnimationFrame(tick);
+    else {
+      // Expired — revert to full pricing
+      isEarlyBird = false;
+      renderPricing();
+    }
+  }
+  tick();
+}
+
+/* ── Checkout handler ── */
+async function handleUpgrade(plan) {
+  if (plan === 'starter') { openSignup('starter'); return; }
+
+  // If trial user — go straight to checkout with early pricing
+  if (trialKey && isEarlyBird) {
+    // Need their email — get it from API config or ask
+    try {
+      const res  = await fetch(`/api/config?key=${encodeURIComponent(trialKey)}`);
+      const data = await res.json();
+      if (data.email) {
+        await goToCheckout(plan, data.email, data.company_name, true);
+        return;
+      }
+    } catch(e) {}
+  }
+
+  // Otherwise — open signup modal first to collect info
+  openSignup(plan);
+}
+
+async function goToCheckout(plan, email, company, isEarly) {
+  try {
+    const btn = document.getElementById(plan === 'essentials' ? 'ess-btn' : plan === 'growth' ? 'growth-btn' : 'pro-btn');
+    if (btn) { btn.textContent = 'Redirecting to checkout…'; btn.disabled = true; }
+
+    const res  = await fetch('/api/checkout', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ plan, email, company, is_early: isEarly }),
+    });
+    const data = await res.json();
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      alert('Could not start checkout. Please email growth@ardeablue.io');
+    }
+  } catch(e) {
+    alert('Network error. Please try again or email growth@ardeablue.io');
+  }
+}
+
+/* ── Signup modal ── */
+let pendingPlan = 'starter';
+
+function openSignup(plan) {
+  pendingPlan = plan;
+  const isStarter = plan === 'starter';
+  const modal     = document.getElementById('signup-modal');
+  const content   = document.getElementById('modal-content');
+
+  const earlyNote = isEarlyBird && !isStarter ? `
+    <div style="background:#fef0e8;border:1.5px solid #f4a87c;border-radius:10px;padding:12px 14px;margin-bottom:18px;font-size:13px;color:#a03a0a;">
+      ⏱ <strong>Early-bird pricing applied</strong> — $297 setup fee (saves you ${plan==='essentials'?'$200':plan==='growth'?'$400':'$700'})
+    </div>` : '';
+
+  content.innerHTML = `
+    <h3 style="font-family:'Zilla Slab',serif;font-size:22px;color:#1b2b4b;margin-bottom:6px;">
+      ${isStarter ? 'Start your free trial' : `Get RoofIQ ${plan.charAt(0).toUpperCase()+plan.slice(1)}`}
+    </h3>
+    <p style="font-size:13.5px;color:#718096;margin-bottom:20px;">
+      ${isStarter ? 'No card required. Live on your site in 5 minutes.' : 'Enter your details and we\'ll take you to checkout.'}
+    </p>
+    ${earlyNote}
+    <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:16px;">
+      <div>
+        <label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#718096;margin-bottom:5px;">Your name</label>
+        <input id="sm-name" type="text" placeholder="Jane Smith" style="width:100%;padding:11px 13px;border:1.5px solid #e2e8f0;border-radius:9px;font-family:'DM Sans',sans-serif;font-size:15px;color:#1b2b4b;outline:none;">
+      </div>
+      <div>
+        <label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#718096;margin-bottom:5px;">Company name</label>
+        <input id="sm-company" type="text" placeholder="Ridgeline Roofing" style="width:100%;padding:11px 13px;border:1.5px solid #e2e8f0;border-radius:9px;font-family:'DM Sans',sans-serif;font-size:15px;color:#1b2b4b;outline:none;">
+      </div>
+      <div>
+        <label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#718096;margin-bottom:5px;">Email</label>
+        <input id="sm-email" type="email" placeholder="you@yourcompany.com" style="width:100%;padding:11px 13px;border:1.5px solid #e2e8f0;border-radius:9px;font-family:'DM Sans',sans-serif;font-size:15px;color:#1b2b4b;outline:none;">
+      </div>
+      <div>
+        <label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#718096;margin-bottom:5px;">Phone</label>
+        <input id="sm-phone" type="tel" placeholder="602-555-0100" style="width:100%;padding:11px 13px;border:1.5px solid #e2e8f0;border-radius:9px;font-family:'DM Sans',sans-serif;font-size:15px;color:#1b2b4b;outline:none;">
+      </div>
+      <div>
+        <label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#718096;margin-bottom:5px;">Website URL</label>
+        <input id="sm-website" type="url" placeholder="https://yoursite.com" style="width:100%;padding:11px 13px;border:1.5px solid #e2e8f0;border-radius:9px;font-family:'DM Sans',sans-serif;font-size:15px;color:#1b2b4b;outline:none;">
+      </div>
+    </div>
+    <div id="sm-err" style="display:none;font-size:13px;color:#9b2c1a;background:#fef2f0;border:1px solid #fcd5cc;border-radius:8px;padding:9px 12px;margin-bottom:12px;"></div>
+    <button onclick="submitSignup()" id="sm-btn" style="width:100%;padding:14px;background:#c84b11;color:#fff;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:700;cursor:pointer;">
+      ${isStarter ? 'Start Free Trial →' : `Continue to Payment →`}
+    </button>
+    <p style="font-size:11px;color:#a0aec0;text-align:center;margin-top:10px;">🔒 No spam. We'll never sell your information.</p>
+  `;
+
+  modal.style.display = 'flex';
+  document.getElementById('sm-name').focus();
+}
+
+function closeSignup() {
+  document.getElementById('signup-modal').style.display = 'none';
+}
+
+async function submitSignup() {
+  const name    = document.getElementById('sm-name').value.trim();
+  const company = document.getElementById('sm-company').value.trim();
+  const email   = document.getElementById('sm-email').value.trim();
+  const phone   = document.getElementById('sm-phone').value.trim();
+  const website = document.getElementById('sm-website').value.trim();
+  const errEl   = document.getElementById('sm-err');
+  const btn     = document.getElementById('sm-btn');
+
+  errEl.style.display = 'none';
+
+  if (!name)    { errEl.textContent='Please enter your name.';    errEl.style.display='block'; return; }
+  if (!company) { errEl.textContent='Please enter your company name.'; errEl.style.display='block'; return; }
+  if (!email || !email.includes('@')) { errEl.textContent='Please enter a valid email.'; errEl.style.display='block'; return; }
+
+  btn.textContent = 'Setting up your account…';
+  btn.disabled    = true;
+
+  try {
+    if (pendingPlan === 'starter') {
+      // Free signup
+      const res  = await fetch('/api/signup', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ name, company, email, phone, website, plan: 'starter' }),
+      });
+      const data = await res.json();
+      if (data.ok) {
+        closeSignup();
+        // Show success inline
+        document.getElementById('modal-content').innerHTML = `
+          <div style="text-align:center;padding:24px 0;">
+            <div style="width:52px;height:52px;background:#fef0e8;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:24px;">✓</div>
+            <h3 style="font-family:'Zilla Slab',serif;font-size:22px;color:#1b2b4b;margin-bottom:8px;">Check your email!</h3>
+            <p style="font-size:14px;color:#718096;line-height:1.6;">Your embed code and API key are on their way to <strong>${email}</strong>. Check spam if you don't see it in 2 minutes.</p>
+          </div>`;
+        document.getElementById('signup-modal').style.display = 'flex';
+      } else {
+        throw new Error(data.error || 'Signup failed');
+      }
+    } else {
+      // Paid plan — go to Stripe checkout
+      await goToCheckout(pendingPlan, email, company, isEarlyBird);
+    }
+  } catch(e) {
+    errEl.textContent = e.message || 'Something went wrong. Please try again.';
+    errEl.style.display = 'block';
+    btn.textContent  = pendingPlan === 'starter' ? 'Start Free Trial →' : 'Continue to Payment →';
+    btn.disabled     = false;
+  }
+}
+
+// Close modal on overlay click
+document.getElementById('signup-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeSignup();
+});
+
 /* ── Accordion tiers ── */
 document.querySelectorAll('.tier-hdr').forEach(hdr => {
   hdr.addEventListener('click', () => {
-    const tier = document.getElementById(hdr.getAttribute('data-tier'));
+    const tier   = document.getElementById(hdr.getAttribute('data-tier'));
     const isOpen = tier.classList.contains('open');
-    // Close all
     document.querySelectorAll('.tier').forEach(t => t.classList.remove('open'));
-    // Toggle clicked
     if (!isOpen) tier.classList.add('open');
   });
 });
@@ -1293,18 +1584,14 @@ function calcROI() {
   const jobVal   = parseFloat(document.getElementById('roi-job-val').value)  || 0;
   const close    = parseFloat(document.getElementById('roi-close').value)    || 0;
   const monthly  = parseFloat(document.getElementById('roi-plan').value)     || 0;
-
-  const leads   = visitors * 0.03 * 0.35;
-  const revenue = leads * (close / 100) * jobVal;
-  const cost    = 297 + monthly;
-  const days    = revenue > 0 ? Math.ceil((cost / revenue) * 30) : null;
-
-  const fmt = n => '$' + Math.round(n).toLocaleString('en-US');
-
+  const leads    = visitors * 0.03 * 0.35;
+  const revenue  = leads * (close / 100) * jobVal;
+  const cost     = 297 + monthly;
+  const days     = revenue > 0 ? Math.ceil((cost / revenue) * 30) : null;
+  const fmt      = n => '$' + Math.round(n).toLocaleString('en-US');
   document.getElementById('roi-leads').textContent   = Math.round(leads) + '/mo';
   document.getElementById('roi-revenue').textContent = fmt(revenue) + '/mo';
-  document.getElementById('roi-payback').textContent = days
-    ? (days < 30 ? days + ' days' : Math.ceil(days/30) + ' mo') : '—';
+  document.getElementById('roi-payback').textContent = days ? (days < 30 ? days + ' days' : Math.ceil(days/30) + ' mo') : '—';
   document.getElementById('roi-summary').textContent = leads > 0
     ? `With ${Math.round(leads)} leads/month at a ${close}% close rate, RoofIQ could add an estimated ${fmt(revenue)}/month in pipeline. At that rate, you'd recover the full cost in ${days} day${days===1?'':'s'}.`
     : 'Enter your numbers above to see your ROI.';
@@ -1312,6 +1599,9 @@ function calcROI() {
 ['roi-visitors','roi-job-val','roi-close','roi-plan'].forEach(id =>
   document.getElementById(id).addEventListener('input', calcROI));
 calcROI();
+
+/* ── Init ── */
+initPricing();
 </script>
 </body>
 </html>
