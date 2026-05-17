@@ -1526,8 +1526,10 @@ async function submitSignup() {
   if (!company) { errEl.textContent='Please enter your company name.'; errEl.style.display='block'; return; }
   if (!email || !email.includes('@')) { errEl.textContent='Please enter a valid email.'; errEl.style.display='block'; return; }
 
-  btn.textContent = 'Setting up your account…';
+  // Disable immediately to prevent double-submit
+  btn.textContent = pendingPlan === 'starter' ? 'Setting up your account…' : 'Continuing to payment…';
   btn.disabled    = true;
+  btn.style.opacity = '0.7';
 
   try {
     if (pendingPlan === 'starter') {
