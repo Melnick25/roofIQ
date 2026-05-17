@@ -2,9 +2,14 @@
   "version": 2,
   "buildCommand": "",
   "outputDirectory": "public",
+  "build": {
+    "env": {
+      "NODE_VERSION": "20.x"
+    }
+  },
   "functions": {
     "api/*.js": {
-      "runtime": "nodejs18.x"
+      "runtime": "nodejs20.x"
     }
   },
   "routes": [
