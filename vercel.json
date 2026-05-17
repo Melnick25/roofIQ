@@ -1,21 +1,3 @@
 {
-  "version": 2,
-  "buildCommand": "",
-  "outputDirectory": "public",
-  "build": {
-    "env": {
-      "NODE_VERSION": "22.x"
-    }
-  },
-  "functions": {
-    "api/*.js": {
-      "runtime": "nodejs22.x"
-    }
-  },
-  "routes": [
-    { "src": "/api/(.*)", "dest": "/api/$1" },
-    { "src": "/dashboard", "dest": "/dashboard/index.html" },
-    { "src": "/widget.js", "dest": "/public/widget.js" },
-    { "src": "/(.*)", "dest": "/$1" }
-  ]
+  "version": 2
 }
