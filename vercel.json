@@ -4,12 +4,12 @@
   "outputDirectory": "public",
   "build": {
     "env": {
-      "NODE_VERSION": "20.x"
+      "NODE_VERSION": "22.x"
     }
   },
   "functions": {
     "api/*.js": {
-      "runtime": "nodejs20.x"
+      "runtime": "nodejs22.x"
     }
   },
   "routes": [
