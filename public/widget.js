@@ -5,7 +5,7 @@
 (function () {
   'use strict';
 
-  const BASE_URL = 'https://roofiq.io'; // change to your Vercel domain
+  const BASE_URL = 'https://roof-iq.vercel.app';; // change to your Vercel domain
 
   /* ── Script tag ── */
   const scriptTag = document.currentScript || document.querySelector('script[data-key]');
