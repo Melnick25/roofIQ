@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RoofIQ Pricing — Plans for Every Contractor</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@400;600;700&family=DM+Sans:wght@400;500;600;700&display=swap');
+:root{--orange:#c84b11;--orange-d:#a03a0a;--orange-l:#fef0e8;--navy:#1b2b4b;--slate:#4a5568;--muted:#718096;--border:#e2e8f0;--bg:#f7f6f3;--white:#fff;--green:#276749;--green-l:#ebf5ee;--ff:'DM Sans',sans-serif;--fh:'Zilla Slab',serif;--r:10px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--ff);background:var(--white);color:var(--navy);line-height:1.6;-webkit-font-smoothing:antialiased}
+nav{position:sticky;top:0;z-index:100;background:var(--white);border-bottom:2px solid var(--orange);padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:62px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.nav-brand{font-family:var(--fh);font-size:22px;font-weight:700;color:var(--navy)}
+.nav-brand span{color:var(--orange)}
+.nav-cta{background:var(--orange);color:#fff;font-size:14px;font-weight:700;padding:10px 24px;border-radius:var(--r);text-decoration:none;border:none;cursor:pointer;font-family:var(--ff);transition:background .15s}
+.nav-cta:hover{background:var(--orange-d)}
+/* Hero */
+.ph{background:var(--navy);padding:52px 28px;text-align:center}
+.ph h1{font-family:var(--fh);font-size:clamp(26px,4vw,42px);font-weight:700;color:#fff;margin-bottom:10px}
+.ph p{font-size:16px;color:rgba(255,255,255,.55);max-width:500px;margin:0 auto}
+/* Early bird banner */
+.eb-banner{background:#1b2b4b;border-bottom:1px solid rgba(255,255,255,.08);padding:14px 28px;display:none;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap;text-align:center}
+.eb-banner.show{display:flex}
+.eb-text{font-size:14px;color:rgba(255,255,255,.7)}
+.eb-text strong{color:#f4793a}
+.eb-countdown{font-family:var(--fh);font-size:22px;font-weight:700;color:#f4793a;letter-spacing:1px}
+/* Main */
+.wrap{max-width:860px;margin:0 auto;padding:52px 28px}
+.section-lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--orange);display:block;text-align:center;margin-bottom:10px}
+.section-h{font-family:var(--fh);font-size:clamp(22px,3vw,32px);font-weight:700;color:var(--navy);text-align:center;margin-bottom:6px}
+.section-p{font-size:15px;color:var(--muted);text-align:center;max-width:520px;margin:0 auto 40px;line-height:1.65}
+/* Tiers */
+.tiers{display:flex;flex-direction:column;gap:14px;margin-bottom:52px}
+.tier{background:var(--white);border:1.5px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.04);transition:box-shadow .2s}
+.tier:hover{box-shadow:0 8px 32px rgba(0,0,0,.09)}
+.tier.featured{border-color:var(--orange);box-shadow:0 0 0 4px rgba(200,75,17,.08),0 8px 32px rgba(200,75,17,.12)}
+.tier-hdr{display:flex;align-items:center;gap:16px;padding:20px 24px;cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none}
+.tier-hdr-left{flex:1}
+.tier-name{font-family:var(--fh);font-size:19px;font-weight:700;color:var(--navy);display:flex;align-items:center;gap:10px}
+.tier-pill{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:3px 9px;border-radius:4px;background:var(--orange-l);color:var(--orange)}
+.tier-tagline{font-size:13px;color:var(--muted);margin-top:3px}
+.tier-price{font-family:var(--fh);font-size:26px;font-weight:700;color:var(--navy);line-height:1}
+.tier-price.free{color:var(--green)}
+.tier-price-was{font-size:16px;color:var(--muted);text-decoration:line-through;margin-left:6px;font-family:var(--fh)}
+.tier-price-sub{font-size:11.5px;color:var(--muted);margin-top:2px}
+.tier-chevron{font-size:11px;color:var(--muted);transition:transform .25s;flex-shrink:0;margin-left:8px}
+.tier.open .tier-chevron{transform:rotate(180deg)}
+.tier-body{display:none;padding:0 24px 24px;border-top:1px solid var(--border)}
+.tier.open .tier-body{display:block}
+.tier-body-inner{padding-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+.tier-features{display:flex;flex-direction:column;gap:9px}
+.tf{display:flex;align-items:flex-start;gap:9px;font-size:13.5px;color:#374151;line-height:1.45}
+.tf .icon{font-size:13px;flex-shrink:0;margin-top:2px;color:var(--green);font-style:normal}
+.tf.locked{color:var(--muted)}
+.tf.locked .icon{color:var(--border)}
+.tier-cta-wrap{display:flex;flex-direction:column;gap:10px}
+.tier-cta-desc{background:var(--bg);border-radius:10px;padding:14px;font-size:13px;color:var(--slate);line-height:1.55}
+.tier-cta-desc strong{color:var(--navy);font-weight:700;display:block;margin-bottom:3px}
+.tier-btn{display:block;width:100%;padding:13px;text-align:center;border-radius:var(--r);font-family:var(--ff);font-size:14.5px;font-weight:700;border:none;cursor:pointer;transition:background .15s,transform .1s;text-decoration:none}
+.tier-btn:active{transform:scale(.99)}
+.tier-btn.free-btn{background:var(--bg);color:var(--navy);border:1.5px solid var(--border)}
+.tier-btn.free-btn:hover{border-color:var(--navy)}
+.tier-btn.primary-btn{background:var(--navy);color:#fff}
+.tier-btn.primary-btn:hover{background:#253554}
+.tier-btn.orange-btn{background:var(--orange);color:#fff;box-shadow:0 4px 14px rgba(200,75,17,.3)}
+.tier-btn.orange-btn:hover{background:var(--orange-d)}
+/* ROI */
+.roi-wrap{background:var(--bg);border-radius:16px;padding:28px;border:1.5px solid var(--border)}
+.roi-inputs{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+.roi-field label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:6px}
+.roi-field input,.roi-field select{width:100%;padding:11px 13px;border:1.5px solid var(--border);border-radius:var(--r);font-family:var(--ff);font-size:15px;color:var(--navy);outline:none;transition:border-color .15s;background:var(--white);-webkit-appearance:none}
+.roi-field input:focus,.roi-field select:focus{border-color:var(--orange)}
+.roi-result{background:var(--navy);border-radius:12px;padding:20px}
+.roi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px}
+.roi-stat label{font-size:9.5px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:4px}
+.roi-stat .val{font-family:var(--fh);font-size:20px;font-weight:700;color:#fff;line-height:1}
+.roi-stat .val.green{color:#4ade80}
+.roi-summary{font-size:13px;color:rgba(255,255,255,.5);line-height:1.6}
+.roi-disclaimer{font-size:11px;color:rgba(255,255,255,.25);margin-top:10px;line-height:1.5}
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal-box{background:#fff;border-radius:20px;padding:32px;width:100%;max-width:460px;max-height:90vh;overflow-y:auto;position:relative}
+.modal-close{position:absolute;top:16px;right:18px;background:none;border:none;font-size:22px;color:#a0aec0;cursor:pointer}
+.modal-title{font-family:var(--fh);font-size:22px;color:var(--navy);margin-bottom:6px}
+.modal-sub{font-size:13.5px;color:var(--muted);margin-bottom:20px}
+.mf{margin-bottom:13px}
+.mf label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:5px}
+.mf input{width:100%;padding:12px 13px;border:1.5px solid var(--border);border-radius:9px;font-family:var(--ff);font-size:15px;color:var(--navy);outline:none;transition:border-color .15s}
+.mf input:focus{border-color:var(--orange)}
+.mf input::placeholder{color:#cbd5e0}
+.modal-err{font-size:13px;color:#9b2c1a;background:#fef2f0;border:1px solid #fcd5cc;border-radius:8px;padding:9px 12px;margin-bottom:12px;display:none}
+.modal-btn{width:100%;padding:14px;background:var(--orange);color:#fff;border:none;border-radius:var(--r);font-family:var(--ff);font-size:16px;font-weight:700;cursor:pointer;transition:background .15s}
+.modal-btn:hover{background:var(--orange-d)}
+.modal-btn:disabled{opacity:.65;cursor:not-allowed}
+.modal-privacy{font-size:11px;color:var(--muted);text-align:center;margin-top:10px}
+.eb-note{background:var(--orange-l);border:1.5px solid #f4a87c;border-radius:10px;padding:12px 14px;margin-bottom:18px;font-size:13px;color:#a03a0a;display:none}
+.modal-success{text-align:center;padding:20px 0}
+.modal-success-icon{width:52px;height:52px;background:var(--orange-l);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:22px}
+.modal-success h3{font-family:var(--fh);font-size:22px;color:var(--navy);margin-bottom:8px}
+.modal-success p{font-size:14px;color:var(--muted);line-height:1.6}
+footer{background:var(--navy);padding:28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.footer-brand{font-family:var(--fh);font-size:18px;font-weight:700;color:#fff}
+.footer-brand span{color:#f4793a}
+footer p{font-size:12.5px;color:rgba(255,255,255,.35)}
+footer a{color:rgba(255,255,255,.45);text-decoration:none}
+@media(max-width:680px){.tier-body-inner{grid-template-columns:1fr}.roi-inputs{grid-template-columns:1fr}.roi-grid{grid-template-columns:1fr 1fr}.wrap{padding:32px 16px}.ph{padding:36px 16px}nav{padding:0 16px}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" style="text-decoration:none"><div class="nav-brand">Roof<span>IQ</span></div></a>
+  <button class="nav-cta" onclick="openModal('starter')">Start Free →</button>
+</nav>
+
+<!-- Early bird banner — shown only to trial users via URL key -->
+<div class="eb-banner" id="eb-banner">
+  <div class="eb-text">⏱ <strong>Your early-bird discount is active</strong> — upgrade now to save up to $700. Expires in</div>
+  <div class="eb-countdown" id="eb-countdown">5:00:00:00</div>
+</div>
+
+<div class="ph">
+  <h1>Simple, honest pricing</h1>
+  <p>Start free. Upgrade only when it's proven value. One closed job covers the cost for years.</p>
+</div>
+
+<div class="wrap">
+
+  <span class="section-lbl">Choose your plan</span>
+  <h2 class="section-h" id="pricing-h">Start free — upgrade when it pays for itself</h2>
+  <p class="section-p">Every tier is built to prove its value before asking for more. The free trial is real — no card, no catch.</p>
+
+  <div class="tiers">
+
+    <!-- STARTER -->
+    <div class="tier" id="t-starter">
+      <div class="tier-hdr" data-tier="t-starter">
+        <div class="tier-hdr-left">
+          <div class="tier-name">Starter</div>
+          <div class="tier-tagline">See if it works before spending anything.</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          <div class="tier-price free">Free</div>
+          <div class="tier-price-sub">25 estimates · 14 days</div>
+        </div>
+        <div class="tier-chevron">▼</div>
+      </div>
+      <div class="tier-body">
+        <div class="tier-body-inner">
+          <div class="tier-features">
+            <div class="tf"><em class="icon">✓</em>Live estimator on your site</div>
+            <div class="tf"><em class="icon">✓</em>ZIP-adjusted pricing</div>
+            <div class="tf"><em class="icon">✓</em>Pitch-corrected estimate</div>
+            <div class="tf"><em class="icon">✓</em>25 free estimates</div>
+            <div class="tf locked"><em class="icon">—</em>Your logo & brand colors</div>
+            <div class="tf locked"><em class="icon">—</em>Lead capture & alerts</div>
+            <div class="tf locked"><em class="icon">—</em>Booking & dashboard</div>
+          </div>
+          <div class="tier-cta-wrap">
+            <div class="tier-cta-desc"><strong>No card. No commitment.</strong>Paste one line of code and see it work on your real site before making any decision.</div>
+            <button class="tier-btn free-btn" onclick="openModal('starter')">Get the Free Trial</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ESSENTIALS -->
+    <div class="tier" id="t-essentials">
+      <div class="tier-hdr" data-tier="t-essentials">
+        <div class="tier-hdr-left">
+          <div class="tier-name">Essentials</div>
+          <div class="tier-tagline">Your brand. Your leads. No monthly fee ever.</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0" id="ess-price">
+          <div class="tier-price">$497</div>
+          <div class="tier-price-sub">one-time · no monthly fee</div>
+        </div>
+        <div class="tier-chevron">▼</div>
+      </div>
+      <div class="tier-body">
+        <div class="tier-body-inner">
+          <div class="tier-features">
+            <div class="tf"><em class="icon">✓</em>Everything in Starter</div>
+            <div class="tf"><em class="icon">✓</em>Your logo & brand colors</div>
+            <div class="tf"><em class="icon">✓</em>Unlimited estimates</div>
+            <div class="tf"><em class="icon">✓</em>Lead capture (name + contact)</div>
+            <div class="tf"><em class="icon">✓</em>Email alert on every lead</div>
+            <div class="tf"><em class="icon">✓</em>PDF estimate emailed to homeowner</div>
+            <div class="tf"><em class="icon">✓</em>Setup call included</div>
+            <div class="tf locked"><em class="icon">—</em>SMS alerts</div>
+            <div class="tf locked"><em class="icon">—</em>Appointment booking</div>
+            <div class="tf locked"><em class="icon">—</em>Leads dashboard</div>
+          </div>
+          <div class="tier-cta-wrap">
+            <div class="tier-cta-desc"><strong>Pay once. Yours forever.</strong>One converted lead covers this many times over. No subscription, no risk.</div>
+            <button class="tier-btn primary-btn" id="ess-btn" onclick="openModal('essentials')">Get Essentials — $497</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GROWTH -->
+    <div class="tier featured open" id="t-growth">
+      <div class="tier-hdr" data-tier="t-growth">
+        <div class="tier-hdr-left">
+          <div class="tier-name">Growth <span class="tier-pill">Recommended</span></div>
+          <div class="tier-tagline">SMS alerts, booking, and lead scoring.</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0" id="growth-price">
+          <div class="tier-price">$697</div>
+          <div class="tier-price-sub">setup + $79/mo · cancel anytime</div>
+        </div>
+        <div class="tier-chevron">▼</div>
+      </div>
+      <div class="tier-body">
+        <div class="tier-body-inner">
+          <div class="tier-features">
+            <div class="tf"><em class="icon">✓</em>Everything in Essentials</div>
+            <div class="tf"><em class="icon">✓</em>SMS alert to your phone — instant</div>
+            <div class="tf"><em class="icon">✓</em>Inline appointment booking</div>
+            <div class="tf"><em class="icon">✓</em>Homeowner confirmation + reminder texts</div>
+            <div class="tf"><em class="icon">✓</em>Insurance claim flag</div>
+            <div class="tf"><em class="icon">✓</em>Lead scoring — Hot / Warm / Cold</div>
+            <div class="tf"><em class="icon">✓</em>Roof age + stories qualifier</div>
+            <div class="tf"><em class="icon">✓</em>Leads dashboard</div>
+            <div class="tf"><em class="icon">✓</em>Monthly pipeline report</div>
+            <div class="tf locked"><em class="icon">—</em>AI follow-up sequences</div>
+            <div class="tf locked"><em class="icon">—</em>NOAA storm verification</div>
+          </div>
+          <div class="tier-cta-wrap">
+            <div class="tier-cta-desc"><strong>This is where it pays for itself.</strong>SMS alerts mean you call leads within minutes. Booking means they lock in before shopping around.</div>
+            <button class="tier-btn orange-btn" id="growth-btn" onclick="openModal('growth')">Get Growth — $697 + $79/mo</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRO -->
+    <div class="tier" id="t-pro">
+      <div class="tier-hdr" data-tier="t-pro">
+        <div class="tier-hdr-left">
+          <div class="tier-name">Pro</div>
+          <div class="tier-tagline">AI follow-up, storm intelligence, multi-location.</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0" id="pro-price">
+          <div class="tier-price">$997</div>
+          <div class="tier-price-sub">setup + $149/mo · cancel anytime</div>
+        </div>
+        <div class="tier-chevron">▼</div>
+      </div>
+      <div class="tier-body">
+        <div class="tier-body-inner">
+          <div class="tier-features">
+            <div class="tf"><em class="icon">✓</em>Everything in Growth</div>
+            <div class="tf"><em class="icon">✓</em>AI SMS follow-up (24hr, 72hr, 7-day)</div>
+            <div class="tf"><em class="icon">✓</em>NOAA storm event verification</div>
+            <div class="tf"><em class="icon">✓</em>Insurance lead conversation starters</div>
+            <div class="tf"><em class="icon">✓</em>Multi-location / franchise support</div>
+            <div class="tf"><em class="icon">✓</em>Quarterly pricing calibration call</div>
+            <div class="tf"><em class="icon">✓</em>Priority support — 4hr response</div>
+          </div>
+          <div class="tier-cta-wrap">
+            <div class="tier-cta-desc"><strong>Built for contractors running a real operation.</strong>Storm intelligence surfaces insurance leads before competitors know the storm happened.</div>
+            <button class="tier-btn primary-btn" id="pro-btn" onclick="openModal('pro')">Get Pro — $997 + $149/mo</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ROI CALCULATOR -->
+  <span class="section-lbl">ROI Calculator</span>
+  <h2 class="section-h">Does RoofIQ pay for itself?</h2>
+  <p class="section-p" style="margin-bottom:28px">Put in your numbers. See the math.</p>
+  <div class="roi-wrap">
+    <div class="roi-inputs">
+      <div class="roi-field"><label>Monthly website visitors</label><input type="number" id="roi-v" value="400" min="0"></div>
+      <div class="roi-field"><label>Average job value ($)</label><input type="number" id="roi-j" value="14000" min="0"></div>
+      <div class="roi-field"><label>Your close rate (%)</label><input type="number" id="roi-c" value="25" min="0" max="100"></div>
+      <div class="roi-field"><label>Your plan</label>
+        <select id="roi-p">
+          <option value="0">Essentials — $497 one-time</option>
+          <option value="79" selected>Growth — $697 + $79/mo</option>
+          <option value="149">Pro — $997 + $149/mo</option>
+        </select>
+      </div>
+    </div>
+    <div class="roi-result">
+      <div class="roi-grid">
+        <div class="roi-stat"><label>Est. leads/mo</label><div class="val" id="roi-leads">—</div></div>
+        <div class="roi-stat"><label>Est. revenue added</label><div class="val green" id="roi-rev">—</div></div>
+        <div class="roi-stat"><label>Payback period</label><div class="val" id="roi-pay">—</div></div>
+      </div>
+      <div class="roi-summary" id="roi-sum">Enter your numbers above to see your ROI.</div>
+      <div class="roi-disclaimer">Assumes ~3% of visitors engage the estimator and ~35% submit contact info. Results vary. This is a projection, not a guarantee.</div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-brand">Roof<span>IQ</span></div>
+  <p><a href="/">← Back to home</a> · <a href="mailto:growth@ardeablue.io">growth@ardeablue.io</a></p>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <div id="modal-inner"></div>
+  </div>
+</div>
+
+<script>
+/* ── Early bird detection ── */
+const params     = new URLSearchParams(window.location.search);
+const trialKey   = params.get('key');
+const trialTs    = parseInt(params.get('ts') || '0');
+let isEarlyBird  = false;
+let trialExpiry  = 0;
+
+if (trialKey && trialTs) {
+  trialExpiry = trialTs + (5 * 86400000);
+  isEarlyBird = Date.now() < trialExpiry;
+}
+
+if (isEarlyBird) {
+  // Show banner
+  document.getElementById('eb-banner').classList.add('show');
+
+  // Update prices
+  document.getElementById('ess-price').innerHTML = `
+    <div style="display:flex;align-items:baseline;gap:8px">
+      <div class="tier-price">$297</div>
+      <div class="tier-price-was">$497</div>
+    </div>
+    <div class="tier-price-sub">one-time · save $200 · early-bird</div>`;
+  document.getElementById('growth-price').innerHTML = `
+    <div style="display:flex;align-items:baseline;gap:8px">
+      <div class="tier-price">$297</div>
+      <div class="tier-price-was">$697</div>
+    </div>
+    <div class="tier-price-sub">setup + $79/mo · save $400</div>`;
+  document.getElementById('pro-price').innerHTML = `
+    <div style="display:flex;align-items:baseline;gap:8px">
+      <div class="tier-price">$297</div>
+      <div class="tier-price-was">$997</div>
+    </div>
+    <div class="tier-price-sub">setup + $149/mo · save $700</div>`;
+
+  document.getElementById('ess-btn').textContent    = 'Upgrade Essentials — $297 (save $200) →';
+  document.getElementById('growth-btn').textContent = 'Upgrade Growth — $297 + $79/mo →';
+  document.getElementById('pro-btn').textContent    = 'Upgrade Pro — $297 + $149/mo →';
+
+  // Countdown
+  function tick() {
+    const diff = Math.max(0, trialExpiry - Date.now());
+    const d = Math.floor(diff/86400000);
+    const h = Math.floor((diff%86400000)/3600000);
+    const m = Math.floor((diff%3600000)/60000);
+    const s = Math.floor((diff%60000)/1000);
+    const pad = n => String(n).padStart(2,'0');
+    document.getElementById('eb-countdown').textContent = `${d}:${pad(h)}:${pad(m)}:${pad(s)}`;
+    if (diff > 0) requestAnimationFrame(tick);
+  }
+  tick();
+}
+
+/* ── Accordion ── */
+document.querySelectorAll('.tier-hdr').forEach(hdr => {
+  hdr.addEventListener('click', () => {
+    const tier = document.getElementById(hdr.getAttribute('data-tier'));
+    const open = tier.classList.contains('open');
+    document.querySelectorAll('.tier').forEach(t => t.classList.remove('open'));
+    if (!open) tier.classList.add('open');
+  });
+});
+
+/* ── ROI ── */
+function calcROI() {
+  const v = parseFloat(document.getElementById('roi-v').value)||0;
+  const j = parseFloat(document.getElementById('roi-j').value)||0;
+  const c = parseFloat(document.getElementById('roi-c').value)||0;
+  const mo= parseFloat(document.getElementById('roi-p').value)||0;
+  const setup = mo===0?497:697;
+  const leads = v*0.03*0.35;
+  const rev   = leads*(c/100)*j;
+  const cost  = setup+mo;
+  const days  = rev>0?Math.ceil((cost/rev)*30):null;
+  const fmt   = n=>'$'+Math.round(n).toLocaleString('en-US');
+  document.getElementById('roi-leads').textContent = Math.round(leads)+'/mo';
+  document.getElementById('roi-rev').textContent   = fmt(rev)+'/mo';
+  document.getElementById('roi-pay').textContent   = days?(days<30?days+' days':Math.ceil(days/30)+' mo'):'—';
+  document.getElementById('roi-sum').textContent   = leads>0
+    ?`With ${Math.round(leads)} leads/month at a ${c}% close rate, RoofIQ could add ${fmt(rev)}/month in pipeline. You'd recover the full cost in ${days} day${days===1?'':'s'}.`
+    :'Enter your numbers above to see your ROI.';
+}
+['roi-v','roi-j','roi-c','roi-p'].forEach(id=>document.getElementById(id).addEventListener('input',calcROI));
+calcROI();
+
+/* ── Modal ── */
+let pendingPlan = 'starter';
+
+function openModal(plan) {
+  pendingPlan = plan;
+  const isStarter = plan==='starter';
+  const planNames = {starter:'Free Trial',essentials:'Essentials',growth:'Growth',pro:'Pro'};
+  const savings   = {essentials:'save $200',growth:'save $400',pro:'save $700'};
+
+  const ebNote = isEarlyBird && !isStarter
+    ? `<div class="eb-note" style="display:block">⏱ <strong>Early-bird pricing applied</strong> — $297 setup fee (${savings[plan]})</div>`
+    : '';
+
+  document.getElementById('modal-inner').innerHTML = `
+    <div class="modal-title">${isStarter?'Start your free trial':`Get RoofIQ ${planNames[plan]}`}</div>
+    <div class="modal-sub">${isStarter?'No card required. Live on your site in 5 minutes.':'Enter your details and we\'ll take you to checkout.'}</div>
+    ${ebNote}
+    <div class="mf"><label>Your name</label><input id="m-name" placeholder="Jane Smith"></div>
+    <div class="mf"><label>Company name</label><input id="m-company" placeholder="Ridgeline Roofing"></div>
+    <div class="mf"><label>Email</label><input type="email" id="m-email" placeholder="you@yourcompany.com"></div>
+    <div class="mf"><label>Phone</label><input type="tel" id="m-phone" placeholder="602-555-0100"></div>
+    <div class="mf"><label>Website URL</label><input type="url" id="m-website" placeholder="https://yoursite.com"></div>
+    <div class="modal-err" id="m-err"></div>
+    <button class="modal-btn" id="m-btn" onclick="submitModal()">${isStarter?'Start Free Trial →':'Continue to Payment →'}</button>
+    <div class="modal-privacy">🔒 No spam. We'll never sell your information.</div>`;
+
+  document.getElementById('modal-overlay').classList.add('open');
+  setTimeout(()=>document.getElementById('m-name').focus(),100);
+}
+
+function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); }
+document.getElementById('modal-overlay').addEventListener('click',function(e){if(e.target===this)closeModal();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+
+async function submitModal() {
+  const name    = document.getElementById('m-name').value.trim();
+  const company = document.getElementById('m-company').value.trim();
+  const email   = document.getElementById('m-email').value.trim();
+  const phone   = document.getElementById('m-phone').value.trim();
+  const website = document.getElementById('m-website').value.trim();
+  const errEl   = document.getElementById('m-err');
+  const btn     = document.getElementById('m-btn');
+
+  errEl.style.display='none';
+  if(!name)                        {errEl.textContent='Please enter your name.';         errEl.style.display='block';return;}
+  if(!company)                     {errEl.textContent='Please enter your company name.'; errEl.style.display='block';return;}
+  if(!email||!email.includes('@')) {errEl.textContent='Please enter a valid email.';    errEl.style.display='block';return;}
+
+  btn.textContent = pendingPlan==='starter'?'Setting up your account…':'Continuing to payment…';
+  btn.disabled=true; btn.style.opacity='.7';
+
+  try {
+    if (pendingPlan==='starter') {
+      const res  = await fetch('/api/signup',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,company,email,phone,website,plan:'starter'})});
+      const data = await res.json();
+      if (data.ok||data.already_exists) {
+        document.getElementById('modal-inner').innerHTML=`
+          <div class="modal-success">
+            <div class="modal-success-icon">✓</div>
+            <h3>Check your email!</h3>
+            <p>Your embed code is on its way to <strong>${email}</strong>.<br>Check spam if you don't see it in 2 minutes.</p>
+          </div>`;
+      } else throw new Error(data.error||'Signup failed');
+    } else {
+      const res  = await fetch('/api/checkout',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan:pendingPlan,email,company,name,website,is_early:isEarlyBird})});
+      const data = await res.json();
+      if(data.url) window.location.href=data.url;
+      else throw new Error('Could not start checkout');
+    }
+  } catch(e) {
+    errEl.textContent=e.message||'Something went wrong. Please try again.';
+    errEl.style.display='block';
+    btn.textContent=pendingPlan==='starter'?'Start Free Trial →':'Continue to Payment →';
+    btn.disabled=false; btn.style.opacity='1';
+  }
+}
+</script>
+</body>
+</html>
