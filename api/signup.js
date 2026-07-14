@@ -2,6 +2,10 @@
 // Handles free trial signups — instant account creation, welcome email, admin alert
 
 import { supabaseAdmin } from '../lib/supabase.js';
+import { integrationCreateFields } from '../lib/integration.js';
+import crypto from 'node:crypto';
+
+const RESETTABLE_TEST_EMAILS = new Set(['melnickroy@gmail.com']);
 
 const CORS = {
   'Access-Control-Allow-Origin':  '*',
@@ -10,12 +14,14 @@ const CORS = {
 };
 
 export default async function handler(req, res) {
-  if (req.method === 'OPTIONS') return res.status(200).setHeaders(CORS).end();
   Object.entries(CORS).forEach(([k,v]) => res.setHeader(k, v));
+  if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   try {
-    const { name, company, email, phone, website, plan } = req.body;
+    const { name, company, email, phone, website, plan, prospect, product, contractor_id } = req.body;
+    const normalizedEmail = String(email || '').toLowerCase().trim();
+    const selectedPlan = plan || 'starter';
 
     if (!name || !email || !company)
       return res.status(400).json({ error: 'Name, company and email are required' });
@@ -24,10 +30,69 @@ export default async function handler(req, res) {
     const { data: existing } = await supabaseAdmin
       .from('roofing_companies')
       .select('id, api_key, plan')
-      .eq('email', email.toLowerCase())
+      .eq('email', normalizedEmail)
       .limit(1);
 
     if (existing?.length) {
+      if (RESETTABLE_TEST_EMAILS.has(normalizedEmail)) {
+        await clearTestAccountData(existing[0].id, normalizedEmail);
+
+        const resetFields = {
+          company_name: company,
+          email: normalizedEmail,
+          phone: phone || null,
+          website: website || null,
+          api_key: crypto.randomBytes(24).toString('hex'),
+          ...integrationCreateFields({ contractor_id, website, plan: selectedPlan }),
+          plan: selectedPlan,
+          trial_uses_left: 25,
+          trial_started: new Date().toISOString(),
+          widget_installed: false,
+          lead_count: 0,
+          estimate_summary_count: 0,
+          booking_count: 0,
+          alert_count: 0,
+          dashboard_last_active_at: null,
+          email_alerts: true,
+          sms_alerts: false,
+          tagline: 'Market-Adjusted Roof Estimate',
+          primary_color: '#c84b11',
+        };
+
+        const { data: company_row, error: resetError } = await supabaseAdmin
+          .from('roofing_companies')
+          .update(resetFields)
+          .eq('id', existing[0].id)
+          .select()
+          .single();
+
+        if (resetError) throw resetError;
+
+        await markProspectTrialStarted({ prospect, email: normalizedEmail, companyId: company_row.id, product });
+
+        await sendEmail({
+          to:      normalizedEmail,
+          subject: `Welcome to RoofIQ — your estimator is ready to install`,
+          html:    welcomeEmail(company_row, name, website),
+        });
+
+        await sendEmail({
+          to:      'growth@ardeablue.io',
+          subject: `Test signup reset — ${company} (${selectedPlan})`,
+          html:    adminAlert(company_row, name, website),
+        });
+
+        await scheduleTrialFollowups(company_row.id, normalizedEmail, company);
+
+        return res.status(200).json({
+          ok: true,
+          api_key: company_row.api_key,
+          plan: company_row.plan,
+          reset_for_test: true,
+          message: 'Test account reset — check your email.',
+        });
+      }
+
       return res.status(200).json({
         ok: true,
         already_exists: true,
@@ -40,14 +105,16 @@ export default async function handler(req, res) {
       .from('roofing_companies')
       .insert({
         company_name:   company,
-        email:          email.toLowerCase(),
+        email:          normalizedEmail,
         phone:          phone || null,
-        plan:           plan || 'starter',
+        website:        website || null,
+        ...integrationCreateFields({ contractor_id, website, plan: selectedPlan }),
+        plan:           selectedPlan,
         trial_uses_left: 25,
         trial_started:  new Date().toISOString(),
         email_alerts:   true,
         sms_alerts:     false,
-        tagline:        'Free Instant Roof Estimate',
+        tagline:        'Market-Adjusted Roof Estimate',
         primary_color:  '#c84b11',
       })
       .select()
@@ -55,9 +122,11 @@ export default async function handler(req, res) {
 
     if (error) throw error;
 
+    await markProspectTrialStarted({ prospect, email: normalizedEmail, companyId: company_row.id, product });
+
     // Send welcome email to contractor
     await sendEmail({
-      to:      email,
+      to:      normalizedEmail,
       subject: `Welcome to RoofIQ — your estimator is ready to install`,
       html:    welcomeEmail(company_row, name, website),
     });
@@ -65,34 +134,16 @@ export default async function handler(req, res) {
     // Alert you (the owner)
     await sendEmail({
       to:      'growth@ardeablue.io',
-      subject: `🎉 New RoofIQ signup — ${company} (${plan || 'starter'})`,
+      subject: `🎉 New RoofIQ signup — ${company} (${selectedPlan})`,
       html:    adminAlert(company_row, name, website),
     });
 
-    // Schedule follow-up emails (logged to DB, processed by /api/followup cron)
-    await supabaseAdmin.from('email_queue').insert([
-      {
-        roofing_company_id: company_row.id,
-        send_after: daysFromNow(7),
-        template: 'trial_day7',
-        email: email.toLowerCase(),
-        company_name: company,
-      },
-      {
-        roofing_company_id: company_row.id,
-        send_after: daysFromNow(10),
-        template: 'trial_day10',
-        email: email.toLowerCase(),
-        company_name: company,
-      },
-      {
-        roofing_company_id: company_row.id,
-        send_after: daysFromNow(13),
-        template: 'trial_day13',
-        email: email.toLowerCase(),
-        company_name: company,
-      },
-    ]).catch(() => {}); // non-fatal if email_queue doesn't exist yet
+    // Schedule trial follow-ups if the optional queue table exists.
+    try {
+      await scheduleTrialFollowups(company_row.id, normalizedEmail, company);
+    } catch (_) {
+      // Follow-up queue is useful, but signup should never fail because of it.
+    }
 
     return res.status(200).json({
       ok:      true,
@@ -109,6 +160,47 @@ export default async function handler(req, res) {
 
 function daysFromNow(n) {
   return new Date(Date.now() + n * 86400000).toISOString();
+}
+
+async function scheduleTrialFollowups(companyId, email, companyName) {
+  try {
+    await supabaseAdmin.from('email_queue').insert([
+      {
+        roofing_company_id: companyId,
+        send_after: daysFromNow(7),
+        template: 'trial_day7',
+        email,
+        company_name: companyName,
+      },
+      {
+        roofing_company_id: companyId,
+        send_after: daysFromNow(10),
+        template: 'trial_day10',
+        email,
+        company_name: companyName,
+      },
+      {
+        roofing_company_id: companyId,
+        send_after: daysFromNow(13),
+        template: 'trial_day13',
+        email,
+        company_name: companyName,
+      },
+    ]);
+  } catch (_) {
+    // Follow-up queue is useful, but signup should never fail because of it.
+  }
+}
+
+async function clearTestAccountData(companyId, email) {
+  try {
+    await supabaseAdmin.from('booking_slots').delete().eq('roofing_company_id', companyId);
+    await supabaseAdmin.from('estimate_log').delete().eq('roofing_company_id', companyId);
+    await supabaseAdmin.from('leads').delete().eq('roofing_company_id', companyId);
+    await supabaseAdmin.from('email_queue').delete().eq('email', email);
+  } catch (err) {
+    console.warn('[signup] test reset cleanup skipped:', err.message);
+  }
 }
 
 async function sendEmail({ to, subject, html }) {
@@ -134,19 +226,13 @@ async function sendEmail({ to, subject, html }) {
 function welcomeEmail(company, name, website) {
   const domain     = 'https://roofiq.live';
   const embedCode  = `&lt;script src="${domain}/widget.js" data-key="${company.api_key}"&gt;&lt;/script&gt;`;
-  const trialTs    = new Date(company.trial_started || Date.now()).getTime();
-  const upgradeUrl = `${domain}/#pricing?key=${encodeURIComponent(company.api_key)}&ts=${trialTs}`;
   return `
   <div style="font-family:sans-serif;max-width:600px;margin:0 auto;">
     <div style="background:#1b2b4b;padding:24px;border-radius:12px 12px 0 0;">
       <h1 style="color:#fff;font-size:24px;margin:0;">Welcome to RoofIQ, ${name.split(' ')[0]}! 🎉</h1>
     </div>
     <div style="background:#fff;padding:28px;border:1px solid #e2e8f0;border-radius:0 0 12px 12px;">
-      <p style="color:#4a5568;font-size:15px;">Your free trial is active — 25 estimates, 14 days. Here's how to get your estimator live in the next 5 minutes.</p>
-
-      <div style="background:#fef0e8;border:1.5px solid #f4a87c;border-radius:10px;padding:14px 16px;margin-bottom:20px;">
-        <p style="color:#a03a0a;font-size:14px;margin:0;"><strong>⏱ Early-bird offer:</strong> Upgrade within 5 days and save up to $700 on your setup fee. <a href="${upgradeUrl}" style="color:#c84b11;font-weight:700;">View your discounted pricing →</a></p>
-      </div>
+      <p style="color:#4a5568;font-size:15px;">Your free trial is active — 25 market-adjusted roof estimates, 14 days. Here's how to get your estimator live in the next few minutes.</p>
 
       <h3 style="color:#1b2b4b;margin-top:24px;">Step 1 — Paste this code on your website</h3>
       <p style="color:#4a5568;font-size:14px;">Add this before the &lt;/body&gt; tag on any page:</p>
@@ -191,4 +277,38 @@ function adminAlert(company, name, website) {
       </table>
     </div>
   </div>`;
+}
+
+async function markProspectTrialStarted({ prospect, email, companyId, product }) {
+  try {
+    const payload = {
+      outreach_status: 'interested',
+      reply_status: 'trial_started',
+    };
+
+    if (prospect) {
+      const { error } = await supabaseAdmin
+        .from('lead_prospects')
+        .update(payload)
+        .eq('source_row_hash', prospect);
+      if (!error) return;
+    }
+
+    if (email) {
+      const { data: matches } = await supabaseAdmin
+        .from('lead_emails')
+        .select('lead_prospect_id')
+        .eq('email', email.toLowerCase())
+        .limit(1);
+      const prospectId = matches?.[0]?.lead_prospect_id;
+      if (prospectId) {
+        await supabaseAdmin
+          .from('lead_prospects')
+          .update(payload)
+          .eq('id', prospectId);
+      }
+    }
+  } catch (_) {
+    // Prospect attribution is useful, but signup should never fail because of it.
+  }
 }
